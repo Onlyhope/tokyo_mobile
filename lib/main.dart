@@ -10,8 +10,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       home: Scaffold(
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30.0),
+        body: Center(
           child: LogInForm()
         )
       ),
