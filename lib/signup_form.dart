@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tokyo_mobile/exercise_record_list_view.dart';
-import 'package:tokyo_mobile/signup_form.dart';
 
-class LogInForm extends StatefulWidget {
+class SignUpForm extends StatefulWidget {
   @override
-  LogInFormState createState() {
-    return LogInFormState();
+  SignUpFormState createState() {
+    return SignUpFormState();
   }
 }
 
-class LogInFormState extends State<LogInForm> {
+class SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -48,6 +46,18 @@ class LogInFormState extends State<LogInForm> {
                   },
                   obscureText: true,
                 ),
+                TextFormField(
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.lock), labelText: 'Confirm Password'),
+                  validator: (String value) {
+                    if (value.isEmpty) {
+                      return "Missing password";
+                    }
+
+                    return null;
+                  },
+                  obscureText: true,
+                ),
                 Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40.0, vertical: 20.0),
@@ -56,11 +66,10 @@ class LogInFormState extends State<LogInForm> {
                         Expanded(
                           flex: 5,
                           child: RaisedButton(
-                            child: Text('Login'),
+                            child: Text('Sign Up'),
                             onPressed: () {
                               if (_formKey.currentState.validate()) {
                                 // Process data
-                                goToExerciseRecordListView(context);
                               }
                             },
                           ),
@@ -69,32 +78,13 @@ class LogInFormState extends State<LogInForm> {
                         Expanded(
                           flex: 5,
                           child: RaisedButton(
-                              child: Text('Sign Up'),
-                              onPressed: () {
-                                goToSignUp(context);
-                              }),
+                              child: Text('Login'), onPressed: () {
+                                Navigator.pop(context);
+                          }),
                         )
                       ],
                     )),
               ],
             )));
   }
-}
-
-void goToSignUp(BuildContext context) {
-  Navigator.push(context, MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return Scaffold(
-            body: Center(child: SignUpForm()));
-      }));
-}
-
-void goToExerciseRecordListView(BuildContext context) {
-  Navigator.push(context, MaterialPageRoute<void>(
-    builder: (BuildContext context) {
-      return Scaffold(
-        body: Center(child: DynamicListView())
-      );
-    }
-  ));
 }
