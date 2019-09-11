@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tokyo_mobile/exercise_record_list_view.dart';
-import 'package:tokyo_mobile/signup_form.dart';
+import 'package:tokyo_mobile/views/exercise_record_list_view.dart';
+import 'package:tokyo_mobile/views/signup_form.dart';
 
 class LogInForm extends StatefulWidget {
   @override

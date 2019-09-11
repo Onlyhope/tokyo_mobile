@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'models/exercise_record.dart';
+
 class DynamicListView extends StatefulWidget {
   @override
   ExerciseRecordListView createState() {
     return ExerciseRecordListView();
   }
-}
-
-class ExerciseRecord {
-  String exercise_name;
-  int weights;
-  int reps;
 }
 
 class ExerciseRecordListView extends State<DynamicListView> {
