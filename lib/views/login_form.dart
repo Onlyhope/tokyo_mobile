@@ -75,7 +75,14 @@ class LogInFormState extends State<LogInForm> {
                               }),
                         )
                       ],
-                    )),
+                    )
+                ),
+                FloatingActionButton(
+                  onPressed: () {
+                    goToSandbox(context);
+                  },
+                )
+
               ],
             )));
   }
@@ -95,6 +102,14 @@ void goToExerciseRecordListView(BuildContext context) {
       return Scaffold(
         body: Center(child: DynamicListView())
       );
+    }
+  ));
+}
+
+void goToSandbox(BuildContext context) {
+  Navigator.push(context, MaterialPageRoute<void>(
+    builder: (BuildContext context) {
+      return Sandbox();
     }
   ));
 }
