@@ -3,7 +3,7 @@ import 'exercise_set.dart';
 class ExerciseRecord {
 
   int exerciseRecId;
-  String exercise_name;
+  String exerciseName;
   List<ExerciseSet> exerciseSets;
 
 }

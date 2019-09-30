@@ -16,12 +16,10 @@ class ExerciseRecordListView extends State<DynamicListView> {
 
   ExerciseRecordListView() {
     ExerciseRecord squat = ExerciseRecord();
-    squat.exercise_name = "Squat";
-//    exerciseRecords.add(squat);
+    squat.exerciseName = "Squat";//    exerciseRecords.add(squat);
 
     ExerciseRecord bench = ExerciseRecord();
-    bench.exercise_name = "Bench";
-//    exerciseRecords.add(bench);
+    bench.exerciseName = "Bench";
 
     this.exerciseRecords = [squat, bench];
 
@@ -31,17 +29,9 @@ class ExerciseRecordListView extends State<DynamicListView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        itemBuilder: (context, index) {
-          return Padding(
-              padding: EdgeInsets.all(16.0),
-              child: ListView.builder(
-                itemBuilder: (BuildContext context, int i) => displayItem(exerciseRecords[i]),
-                itemCount: exerciseRecords.length,
-                shrinkWrap: true,
-              )
-          );
-        },
+        itemBuilder: (BuildContext context, int i) => displayItem(exerciseRecords[i]),
         itemCount: exerciseRecords.length,
+        shrinkWrap: true,
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
@@ -59,9 +49,6 @@ class ExerciseRecordListView extends State<DynamicListView> {
   }
 
   Widget displayItem(ExerciseRecord exerciseRecord) {
-
-    String exerciseName = exerciseRecord.exercise_name;
-
     return ExerciseRecordView(exerciseRecord);
   }
 
