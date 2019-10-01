@@ -38,23 +38,32 @@ class ExerciseRecordViewState extends State<ExerciseRecordView> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Card(
-          child: ListTile(
-            title: Text(_exerciseName),
-            subtitle: GestureDetector(
-              child: ListView.builder(
-                itemBuilder: (BuildContext context, int i) =>
-                    displaySet(context, i),
-                itemCount: _sets.length,
-                shrinkWrap: true,
-              ),
-              onLongPress: () {
-                _sets.add(new ExerciseSet());
-                setState(() {});
-              },
-            ),
-          )
+        ListTile(
+          title: Text(_exerciseName),
+          trailing: IconButton(
+            icon: Icon(Icons.add),
+            tooltip: 'Add a set',
+            color: Colors.deepOrangeAccent,
+            onPressed: () {
+              _sets.add(new ExerciseSet());
+              setState(() {});
+            },
+          ),
         ),
+        Divider(),
+        Padding(
+          padding: EdgeInsets.all(16.0),
+          child: ListView.separated(
+            itemBuilder: (BuildContext context, int i) =>
+                displaySet(context, i),
+            separatorBuilder: (BuildContext context, index) {
+              return Divider();
+            },
+            itemCount: _sets.length,
+            shrinkWrap: true,
+          ),
+        ),
+        Divider()
       ],
     );
   }
@@ -62,8 +71,44 @@ class ExerciseRecordViewState extends State<ExerciseRecordView> {
   Widget displaySet(BuildContext context, int i) {
     return Row(
       children: <Widget>[
-        Expanded(child: Text(_sets[i].reps.toString())),
-        Expanded(child: Text(_sets[i].weights.toString())),
+        Expanded(
+            child: Center(
+                child: Container(
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom:
+                                BorderSide(color: Colors.black38, width: 2.0))),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+                    margin: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Center(child: Text(_sets[i].reps.toString())),
+                  width: 57,
+                  height: 35
+                )
+            )
+        ),
+        Expanded(
+          child: Center(
+            child: Text('rep(s)')
+          )
+        ),
+        Divider(),
+        Expanded(
+            child: Center(
+                child: Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.black38, width: 2.0),
+              borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+          child: Center(child: Text(_sets[i].weights.toString())),
+          width: 57,
+          height: 35,
+        ))),
+        Expanded(
+          child: Center(
+            child: Text('lbs')
+          )
+        )
       ],
     );
   }
