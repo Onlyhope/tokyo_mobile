@@ -22,16 +22,6 @@ class ExerciseRecordViewState extends State<ExerciseRecordView> {
   ExerciseRecordViewState(String exerciseName) {
     this._exerciseName = exerciseName;
     this._sets = [];
-
-    ExerciseSet setOne = new ExerciseSet();
-    setOne.weights = 135;
-    setOne.reps = 5;
-    _sets.add(setOne);
-
-    ExerciseSet setTwo = new ExerciseSet();
-    setTwo.weights = 155;
-    setTwo.reps = 5;
-    _sets.add(setTwo);
   }
 
   @override
@@ -69,6 +59,10 @@ class ExerciseRecordViewState extends State<ExerciseRecordView> {
   }
 
   Widget displaySet(BuildContext context, int i) {
+
+    double _width = 57;
+    double _height = 35;
+
     return Row(
       children: <Widget>[
         Expanded(
@@ -82,8 +76,8 @@ class ExerciseRecordViewState extends State<ExerciseRecordView> {
                         EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
                     margin: EdgeInsets.symmetric(horizontal: 10.0),
                     child: Center(child: Text(_sets[i].reps.toString())),
-                  width: 57,
-                  height: 35
+                  width: _width,
+                  height: _height
                 )
             )
         ),
@@ -101,8 +95,8 @@ class ExerciseRecordViewState extends State<ExerciseRecordView> {
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
           padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
           child: Center(child: Text(_sets[i].weights.toString())),
-          width: 57,
-          height: 35,
+          width: _width,
+          height: _height,
         ))),
         Expanded(
           child: Center(

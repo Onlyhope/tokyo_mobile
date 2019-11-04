@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class Sandbox extends StatelessWidget {
@@ -78,6 +77,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               onTap: () {
                 setState(() {
                   _data.removeWhere((currentItem) => item == currentItem);
+                });
+              },
+              onLongPress: () {
+                setState(() {
+
                 });
               }),
           isExpanded: item.isExpanded,

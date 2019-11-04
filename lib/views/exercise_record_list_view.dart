@@ -5,12 +5,12 @@ import 'exercise_record_view.dart';
 
 class DynamicListView extends StatefulWidget {
   @override
-  ExerciseRecordListView createState() {
-    return ExerciseRecordListView();
+  _ExerciseRecordListView createState() {
+    return _ExerciseRecordListView();
   }
 }
 
-class ExerciseRecordListView extends State<DynamicListView> {
+class _ExerciseRecordListView extends State<DynamicListView> {
 
   List<ExerciseRecord> exerciseRecords;
 
