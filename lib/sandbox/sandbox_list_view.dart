@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tokyo_mobile/components/dynamic_text_field.dart';
 
 class SandboxListView extends StatelessWidget {
   static const String _title = 'Sandboxing List View';
@@ -13,64 +14,6 @@ class SandboxListView extends StatelessWidget {
   }
 }
 
-// Actual Implementation
-
-class _ItemRow extends StatefulWidget {
-
-  String value;
-
-  _ItemRow(String value) {
-    this.value = value;
-  }
-
-  @override
-  _ItemRowState createState() {
-    return _ItemRowState(value);
-  }
-}
-
-class _ItemRowState extends State<_ItemRow> {
-
-  String value;
-  Widget valueWidget;
-
-
-  _ItemRowState(String value) {
-    this.value = value;
-    this.valueWidget = _valueDisplay(value);
-  }
-
-  _valueDisplay(String value) {
-    return new GestureDetector(
-      child: Text(value),
-      onTap: () {
-        print("Tapped value display: " + this.value);
-        setState(() {
-          this.valueWidget = _valueEdit(value);
-        });
-      },
-    );
-  }
-
-  _valueEdit(String value) {
-    return TextFormField(
-      initialValue: value,
-      onFieldSubmitted: (val) {
-        setState(() {
-          this.value = val;
-          this.valueWidget = _valueDisplay(val);
-        });
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return valueWidget;
-  }
-
-}
-
 class StatefulListView extends StatefulWidget {
   @override
   _ItemListView createState() {
@@ -79,11 +22,10 @@ class StatefulListView extends StatefulWidget {
 }
 
 class _ItemListView extends State<StatefulListView> {
-
-  List<_ItemRow> itemRows = [];
+  List<DynamicTextField> itemRows = [];
 
   _ItemListView() {
-    this.itemRows.add(new _ItemRow("To be changed"));
+    this.itemRows.add(DynamicTextField("To be changed"));
   }
 
   @override
@@ -92,12 +34,14 @@ class _ItemListView extends State<StatefulListView> {
       body: ListView.separated(
         itemBuilder: (BuildContext context, int i) {
           return GestureDetector(
-            child: Center(
-                child: _ItemRow(itemRows[i].value)
-            ),
+            child: Center(child: DynamicTextField(itemRows[i].value)),
             onLongPress: () {
-              setState(() {
-              });
+              setState(() {});
+            },
+            onDoubleTap: () {
+              for (DynamicTextField dtf in itemRows) {
+                print(dtf.value);
+              }
             },
           );
         },
@@ -107,14 +51,13 @@ class _ItemListView extends State<StatefulListView> {
         itemCount: itemRows.length,
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
+        child: Icon(Icons.add),
         onPressed: () {
-            setState(() {
-              itemRows.add(new _ItemRow("Needs to be changed"));
-            });
+          setState(() {
+            itemRows.add(DynamicTextField("Needs to be changed"));
+          });
         },
       ),
-
     );
   }
 }
