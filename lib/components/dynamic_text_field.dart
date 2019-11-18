@@ -4,8 +4,7 @@ class DynamicTextField extends StatefulWidget {
 
   final String value;
 
-  DynamicTextField(String value) {
-    this.value = value;
+  DynamicTextField(this.value) {
   }
 
   @override

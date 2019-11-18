@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tokyo_mobile/sandbox/sandbox_list_view.dart';
 import 'package:tokyo_mobile/sandbox/sandbox_view.dart';
+import 'package:tokyo_mobile/sandbox/sandbox_http_request.dart';
 import 'package:tokyo_mobile/views/exercise_record_list_view.dart';
 import 'package:tokyo_mobile/views/signup_form.dart';
 
@@ -111,7 +112,7 @@ void goToExerciseRecordListView(BuildContext context) {
 void goToSandbox(BuildContext context) {
   Navigator.push(context, MaterialPageRoute<void>(
     builder: (BuildContext context) {
-      return SandboxListView();
+      return HttpClientWidget();
     }
   ));
 }
