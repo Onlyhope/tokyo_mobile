@@ -94,7 +94,7 @@ class ExerciseRecordViewState extends State<ExerciseRecordView> {
               border: Border.all(color: Colors.black38, width: 2.0),
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
           padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
-          child: Center(child: Text(_sets[i].weights.toString())),
+          child: Center(child: Text(_sets[i].weight.toString())),
           width: _width,
           height: _height,
         ))),
