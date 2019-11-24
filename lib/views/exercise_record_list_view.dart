@@ -11,8 +11,16 @@ class ExerciseRecordListView extends StatefulWidget {
 }
 
 class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
-  
+  final TextEditingController createExerciseTextController =
+      TextEditingController();
+
   List<ExerciseRecord> exerciseRecords = [];
+
+  @override
+  void dispose() {
+    createExerciseTextController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +35,7 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
         child: Icon(Icons.add),
         backgroundColor: Colors.deepOrangeAccent,
         onPressed: () {
-          print('Number of exercises: ${exerciseRecords.length}');
-          setState(() {
-            exerciseRecords.add(ExerciseRecord("Squats"));
-          });
+          _createExercise(context, createExerciseTextController);
         },
       ),
     );
@@ -40,7 +45,7 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
     return Column(
       children: <Widget>[
         ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+            contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
             title: Text(exerciseRecord.exerciseName),
             trailing: IconButton(
               icon: Icon(Icons.add),
@@ -95,5 +100,54 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
                 child: Center(child: Text(value)),
                 width: width,
                 height: height)));
+  }
+
+  Future<void> _createExercise(
+      BuildContext context, TextEditingController exerciseNameText) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+              title: const Text('Select an exercise'),
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(
+                      left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
+                  padding: EdgeInsets.symmetric(horizontal: 9.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Exercise Name',
+                      border: OutlineInputBorder(),
+                    ),
+                    controller: exerciseNameText,
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(right: 5.0),
+                      child: FlatButton(
+                          onPressed: () {
+                            exerciseRecords.add(ExerciseRecord(exerciseNameText.text));
+                            setState(() {});
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Create')),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 5.0),
+                      child: FlatButton(
+                        child: const Text('Close'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.end,
+                ),
+              ]);
+        });
   }
 }
