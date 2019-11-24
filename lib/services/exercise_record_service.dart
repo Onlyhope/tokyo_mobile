@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:tokyo_mobile/models/exercise_record.dart';
@@ -45,6 +45,8 @@ class ExerciseRecordService {
 
     Response response = await post(saveExerciseRecordUrl,
         headers: headers, body: jsonEncode(exerciseRecord));
+
+    return response.statusCode;
   }
 
   Future<int> deleteExerciseRecord(String id) async {

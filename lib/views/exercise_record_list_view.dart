@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/exercise_record.dart';
-import 'exercise_record_view.dart';
+import '../models/exercise_set.dart';
 
 class DynamicListView extends StatefulWidget {
   @override
@@ -11,25 +11,14 @@ class DynamicListView extends StatefulWidget {
 }
 
 class _ExerciseRecordListView extends State<DynamicListView> {
-
   List<ExerciseRecord> exerciseRecords;
-
-  ExerciseRecordListView() {
-    ExerciseRecord squat = ExerciseRecord();
-    squat.exerciseName = "Squat";//    exerciseRecords.add(squat);
-
-    ExerciseRecord bench = ExerciseRecord();
-    bench.exerciseName = "Bench";
-
-    this.exerciseRecords = [squat, bench];
-
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        itemBuilder: (BuildContext context, int i) => displayItem(exerciseRecords[i]),
+        itemBuilder: (BuildContext context, int i) =>
+            _displayExerciseRecords(exerciseRecords[i]),
         itemCount: exerciseRecords.length,
         shrinkWrap: true,
       ),
@@ -48,9 +37,61 @@ class _ExerciseRecordListView extends State<DynamicListView> {
     print('Adding exercise record...');
   }
 
-  Widget displayItem(ExerciseRecord exerciseRecord) {
-    return ExerciseRecordView(exerciseRecord);
+  Widget _displayExerciseRecords(ExerciseRecord exerciseRecord) {
+    return Column(
+      children: <Widget>[
+        ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 2.0),
+            title: Text(exerciseRecord.exerciseName),
+            trailing: IconButton(
+              icon: Icon(Icons.add),
+              tooltip: 'Add a set',
+              color: Colors.deepOrangeAccent,
+              onPressed: () {
+                setState() {}
+              },
+            )),
+        Divider(),
+        Padding(
+          padding: EdgeInsets.all(16.0),
+          child: ListView.separated(
+            itemBuilder: (BuildContext context, int i) =>
+                _displaySet(context, exerciseRecord.exerciseSets[i]),
+            separatorBuilder: (BuildContext context, int i) => Divider(),
+            itemCount: exerciseRecord.exerciseSets.length,
+            shrinkWrap: true,
+          ),
+        ),
+        Divider()
+      ],
+    );
   }
 
-}
+  Widget _displaySet(BuildContext context, ExerciseSet exerciseSet) {
+    return Row(
+      children: <Widget>[
+        _displayValue(context, exerciseSet.reps.toString()),
+        Expanded(child: Center(child: Text('rep(s)'))),
+        Divider(),
+        _displayValue(context, exerciseSet.weight.toString()),
+        Expanded(child: Center(child: Text('lbs')))
+      ],
+    );
+  }
 
+  Widget _displayValue(BuildContext context, String value) {
+    final double width = 57;
+    final double height = 35;
+    return Expanded(
+        child: Center(
+            child: Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.black38, width: 2.0))),
+                padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                child: Center(child: Text(value)),
+                width: width,
+                height: height)));
+  }
+}

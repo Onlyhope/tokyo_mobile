@@ -12,6 +12,7 @@ class ExerciseRecord {
   }
 
   ExerciseRecord.fromJson(Map<String, dynamic> json) {
+
     List<ExerciseSet> setList = [];
     var setsAsJson = json['sets'] as List;
     for (dynamic record in setsAsJson) {
