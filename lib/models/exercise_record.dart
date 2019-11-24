@@ -7,7 +7,8 @@ class ExerciseRecord {
   DateTime createdDate;
   DateTime completedDate;
 
-  ExerciseRecord(this.exerciseRecId, this.exerciseName, this.exerciseSets) {
+  ExerciseRecord(this.exerciseName) {
+    exerciseSets = [];
     createdDate = DateTime.now();
   }
 

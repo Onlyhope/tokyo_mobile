@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import '../models/exercise_record.dart';
 import '../models/exercise_set.dart';
 
-class DynamicListView extends StatefulWidget {
+class ExerciseRecordListView extends StatefulWidget {
   @override
-  _ExerciseRecordListView createState() {
-    return _ExerciseRecordListView();
+  ExerciseRecordListViewState createState() {
+    return ExerciseRecordListViewState();
   }
 }
 
-class _ExerciseRecordListView extends State<DynamicListView> {
-  List<ExerciseRecord> exerciseRecords;
+class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
+  
+  List<ExerciseRecord> exerciseRecords = [];
 
   @override
   Widget build(BuildContext context) {
@@ -26,29 +27,30 @@ class _ExerciseRecordListView extends State<DynamicListView> {
         child: Icon(Icons.add),
         backgroundColor: Colors.deepOrangeAccent,
         onPressed: () {
-          print(exerciseRecords.length);
-          _addExerciseRecord();
+          print('Number of exercises: ${exerciseRecords.length}');
+          setState(() {
+            exerciseRecords.add(ExerciseRecord("Squats"));
+          });
         },
       ),
     );
-  }
-
-  void _addExerciseRecord() {
-    print('Adding exercise record...');
   }
 
   Widget _displayExerciseRecords(ExerciseRecord exerciseRecord) {
     return Column(
       children: <Widget>[
         ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 2.0),
+            contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
             title: Text(exerciseRecord.exerciseName),
             trailing: IconButton(
               icon: Icon(Icons.add),
               tooltip: 'Add a set',
               color: Colors.deepOrangeAccent,
               onPressed: () {
-                setState() {}
+                setState(() {
+                  exerciseRecord.exerciseSets.add(ExerciseSet(135, 5));
+                  print('${exerciseRecord.exerciseSets.length}');
+                });
               },
             )),
         Divider(),
