@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import '../models/exercise_record.dart';
 import '../models/exercise_set.dart';
 
-class ExerciseRecordListView extends StatefulWidget {
+class ExerciseRecordListPage extends StatefulWidget {
   @override
-  ExerciseRecordListViewState createState() {
-    return ExerciseRecordListViewState();
+  ExerciseRecordListPageState createState() {
+    return ExerciseRecordListPageState();
   }
 }
 
-class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
+class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   final TextEditingController createExerciseTextController =
       TextEditingController();
 
-  List<ExerciseRecord> exerciseRecords = [];
+  List<ExerciseRecord> _exerciseRecords = [];
 
   @override
   void dispose() {
@@ -28,7 +28,7 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
       body: ListView.builder(
         itemBuilder: (BuildContext context, int index) =>
             _displayExerciseRecords(index),
-        itemCount: exerciseRecords.length,
+        itemCount: _exerciseRecords.length,
         shrinkWrap: true,
       ),
       floatingActionButton: FloatingActionButton(
@@ -42,7 +42,7 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
   }
 
   Widget _displayExerciseRecords(int recordIndex) {
-    ExerciseRecord exerciseRecord = exerciseRecords[recordIndex];
+    ExerciseRecord exerciseRecord = _exerciseRecords[recordIndex];
     return Column(
       children: <Widget>[
         ListTile(
@@ -80,7 +80,7 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
   }
 
   Widget _displaySet(BuildContext context, int recordIndex, int setIndex) {
-    ExerciseSet exerciseSet = exerciseRecords[recordIndex].exerciseSets[setIndex];
+    ExerciseSet exerciseSet = _exerciseRecords[recordIndex].exerciseSets[setIndex];
     final double width = 57;
     final double height = 35;
     return Row(
@@ -97,12 +97,10 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
                         child: TextFormField(
                           initialValue: exerciseSet.weight.toString(),
                           onChanged: (val) {
-                            print('Setting weight to: $val');
-                            bool isEqual = identical(exerciseSet,exerciseRecords[recordIndex].exerciseSets[setIndex]);
-                            print('Are they equal? $isEqual');
-                            setState(() {
-                              exerciseSet.weight = val as int;
-                            });
+                            setState(() {exerciseSet.weight = int.parse(val);});
+                          },
+                          onTap: () {
+                            print('${_exerciseRecords[recordIndex]}');
                           },
                         )
                     ),
@@ -122,12 +120,10 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
                         child: TextFormField(
                           initialValue: exerciseSet.reps.toString(),
                           onChanged: (val) {
-                            print('Setting reps to: $val');
-                            bool isEqual = identical(exerciseSet,exerciseRecords[recordIndex].exerciseSets[setIndex]);
-                            print('Are they equal? $isEqual');
-                            setState(() {
-                              exerciseSet.weight = val as int;
-                            });
+                            setState(() {exerciseSet.reps = int.parse(val);});
+                          },
+                          onTap: () {
+                            print('${_exerciseRecords[recordIndex]}');
                           },
                         )
                     ),
@@ -165,7 +161,7 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
                       padding: EdgeInsets.only(right: 5.0),
                       child: FlatButton(
                           onPressed: () {
-                            exerciseRecords
+                            _exerciseRecords
                                 .add(ExerciseRecord(exerciseNameText.text));
                             setState(() {});
                             Navigator.pop(context);
