@@ -34,4 +34,14 @@ class ExerciseRecord {
     'createdDate': createdDate.toString(),
     'completedDate': completedDate.toString()
   };
+
+  @override
+  String toString() {
+    String exerciseSetsAsString = "";
+    for (var x in this.exerciseSets) {
+      exerciseSetsAsString += '${x}\n';
+    }
+    return 'ExerciseRecord{exerciseRecId: $exerciseRecId, exerciseName: $exerciseName}\n${exerciseSetsAsString}';
+  }
+
 }

@@ -26,8 +26,8 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        itemBuilder: (BuildContext context, int i) =>
-            _displayExerciseRecords(exerciseRecords[i]),
+        itemBuilder: (BuildContext context, int index) =>
+            _displayExerciseRecords(index),
         itemCount: exerciseRecords.length,
         shrinkWrap: true,
       ),
@@ -41,7 +41,8 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
     );
   }
 
-  Widget _displayExerciseRecords(ExerciseRecord exerciseRecord) {
+  Widget _displayExerciseRecords(int recordIndex) {
+    ExerciseRecord exerciseRecord = exerciseRecords[recordIndex];
     return Column(
       children: <Widget>[
         ListTile(
@@ -57,13 +58,17 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
                   print('${exerciseRecord.exerciseSets.length}');
                 });
               },
-            )),
+            ),
+          onLongPress: () {
+              print(exerciseRecord);
+          },
+        ),
         Divider(),
         Padding(
           padding: EdgeInsets.all(16.0),
           child: ListView.separated(
-            itemBuilder: (BuildContext context, int i) =>
-                _displaySet(context, exerciseRecord.exerciseSets[i]),
+            itemBuilder: (BuildContext context, int setIndex) =>
+                _displaySet(context, recordIndex, setIndex),
             separatorBuilder: (BuildContext context, int i) => Divider(),
             itemCount: exerciseRecord.exerciseSets.length,
             shrinkWrap: true,
@@ -74,32 +79,63 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
     );
   }
 
-  Widget _displaySet(BuildContext context, ExerciseSet exerciseSet) {
-    return Row(
-      children: <Widget>[
-        _displayValue(context, exerciseSet.reps.toString()),
-        Expanded(child: Center(child: Text('rep(s)'))),
-        Divider(),
-        _displayValue(context, exerciseSet.weight.toString()),
-        Expanded(child: Center(child: Text('lbs')))
-      ],
-    );
-  }
-
-  Widget _displayValue(BuildContext context, String value) {
+  Widget _displaySet(BuildContext context, int recordIndex, int setIndex) {
+    ExerciseSet exerciseSet = exerciseRecords[recordIndex].exerciseSets[setIndex];
     final double width = 57;
     final double height = 35;
-    return Expanded(
-        child: Center(
-            child: Container(
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(color: Colors.black38, width: 2.0))),
-                padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
-                margin: EdgeInsets.symmetric(horizontal: 10.0),
-                child: Center(child: Text(value)),
-                width: width,
-                height: height)));
+    return Row(
+      children: <Widget>[
+        Expanded(
+            child: Center(
+                child: Container(
+//                decoration: BoxDecoration(
+//                    border: Border(
+//                        bottom: BorderSide(color: Colors.black38, width: 2.0))),
+                    padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+                    margin: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Center(
+                        child: TextFormField(
+                          initialValue: exerciseSet.weight.toString(),
+                          onChanged: (val) {
+                            print('Setting weight to: $val');
+                            bool isEqual = identical(exerciseSet,exerciseRecords[recordIndex].exerciseSets[setIndex]);
+                            print('Are they equal? $isEqual');
+                            setState(() {
+                              exerciseSet.weight = val as int;
+                            });
+                          },
+                        )
+                    ),
+                    width: width,
+                    height: height))),
+        Expanded(child: Center(child: Text('weight'))),
+        Divider(),
+        Expanded(
+            child: Center(
+                child: Container(
+//                decoration: BoxDecoration(
+//                    border: Border(
+//                        bottom: BorderSide(color: Colors.black38, width: 2.0))),
+                    padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+                    margin: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Center(
+                        child: TextFormField(
+                          initialValue: exerciseSet.reps.toString(),
+                          onChanged: (val) {
+                            print('Setting reps to: $val');
+                            bool isEqual = identical(exerciseSet,exerciseRecords[recordIndex].exerciseSets[setIndex]);
+                            print('Are they equal? $isEqual');
+                            setState(() {
+                              exerciseSet.weight = val as int;
+                            });
+                          },
+                        )
+                    ),
+                    width: width,
+                    height: height))),
+        Expanded(child: Center(child: Text('rep(s)')))
+      ],
+    );
   }
 
   Future<void> _createExercise(
@@ -129,7 +165,8 @@ class ExerciseRecordListViewState extends State<ExerciseRecordListView> {
                       padding: EdgeInsets.only(right: 5.0),
                       child: FlatButton(
                           onPressed: () {
-                            exerciseRecords.add(ExerciseRecord(exerciseNameText.text));
+                            exerciseRecords
+                                .add(ExerciseRecord(exerciseNameText.text));
                             setState(() {});
                             Navigator.pop(context);
                           },

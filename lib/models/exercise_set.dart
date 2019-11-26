@@ -17,4 +17,10 @@ class ExerciseSet {
       'reps': reps,
     };
   }
+
+  @override
+  String toString() {
+    return 'ExerciseSet{reps: $reps, weight: $weight}';
+  }
+
 }
