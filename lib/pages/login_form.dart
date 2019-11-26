@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tokyo_mobile/sandbox/sandbox_http_request.dart';
-import 'package:tokyo_mobile/views/exercise_record_list_view.dart';
-import 'package:tokyo_mobile/views/signup_form.dart';
+import 'package:tokyo_mobile/pages/exercise_record_list_page.dart';
+import 'package:tokyo_mobile/pages/signup_form.dart';
+import 'package:tokyo_mobile/sandbox/todo_list.dart';
 
 class LogInForm extends StatefulWidget {
   @override
@@ -101,7 +102,7 @@ void goToExerciseRecordListView(BuildContext context) {
   Navigator.push(context, MaterialPageRoute<void>(
     builder: (BuildContext context) {
       return Scaffold(
-        body: Center(child: ExerciseRecordListView())
+        body: Center(child: ExerciseRecordListPage())
       );
     }
   ));
@@ -110,7 +111,7 @@ void goToExerciseRecordListView(BuildContext context) {
 void goToSandbox(BuildContext context) {
   Navigator.push(context, MaterialPageRoute<void>(
     builder: (BuildContext context) {
-      return HttpClientWidget();
+      return TodoApp();
     }
   ));
 }
