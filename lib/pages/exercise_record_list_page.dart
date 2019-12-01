@@ -99,7 +99,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   Widget _displaySet(BuildContext context, int recordIndex, int setIndex) {
     ExerciseSet exerciseSet =
         _exerciseRecords[recordIndex].exerciseSets[setIndex];
-    final double width = 57;
+    final double width = 70;
     final double height = 35;
     return Row(
       children: <Widget>[
