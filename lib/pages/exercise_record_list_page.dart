@@ -120,9 +120,6 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                           exerciseSet.weight = int.parse(val);
                         });
                       },
-                      onTap: () {
-                        print('${_exerciseRecords[recordIndex]}');
-                      },
                     )),
                     width: width,
                     height: height))),
@@ -144,9 +141,6 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                         setState(() {
                           exerciseSet.reps = int.parse(val);
                         });
-                      },
-                      onTap: () {
-                        print('${_exerciseRecords[recordIndex]}');
                       },
                     )),
                     width: width,
