@@ -23,4 +23,24 @@ class ExerciseSet {
     return 'ExerciseSet{reps: $reps, weight: $weight}';
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is ExerciseSet &&
+              runtimeType == other.runtimeType &&
+              exerciseRecId == other.exerciseRecId &&
+              reps == other.reps &&
+              weight == other.weight &&
+              createdDate == other.createdDate;
+
+  @override
+  int get hashCode =>
+      exerciseRecId.hashCode ^
+      reps.hashCode ^
+      weight.hashCode ^
+      createdDate.hashCode;
+
+
+
+
 }

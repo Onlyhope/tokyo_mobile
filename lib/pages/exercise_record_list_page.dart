@@ -26,8 +26,18 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        itemBuilder: (BuildContext context, int index) =>
-            _displayExerciseRecords(index),
+        itemBuilder: (BuildContext context, int index) {
+          final ExerciseRecord exerciseRecord = _exerciseRecords[index];
+          return Dismissible(
+            key: Key(exerciseRecord.hashCode.toString()),
+            child: _displayExerciseRecords(index),
+            onDismissed: (direction) {
+              setState(() {
+                _exerciseRecords.removeAt(index);
+              });
+            },
+          );
+        },
         itemCount: _exerciseRecords.length,
         shrinkWrap: true,
       ),
@@ -78,18 +88,27 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
           },
           onTap: () {
             print(exerciseRecord);
-          },
+          }
         ),
-        Divider(),
-        Padding(
-          padding: EdgeInsets.all(16.0),
-          child: ListView.separated(
-            itemBuilder: (BuildContext context, int setIndex) =>
-                _displaySet(context, recordIndex, setIndex),
-            separatorBuilder: (BuildContext context, int i) => Divider(),
-            itemCount: exerciseRecord.exerciseSets.length,
-            shrinkWrap: true,
-          ),
+        ListView.separated(
+          itemBuilder: (BuildContext context, int setIndex) {
+
+            final ExerciseSet exerciseSet = exerciseRecord.exerciseSets[setIndex];
+
+            return Dismissible(
+              key: Key(exerciseSet.hashCode.toString()),
+              child: _displaySet(context, recordIndex, setIndex),
+              onDismissed: (direction) {
+                setState(() {
+                  exerciseRecord.exerciseSets.removeAt(setIndex);
+                });
+              },
+              background: Container(color: Colors.red),
+            );
+          },
+          separatorBuilder: (BuildContext context, int i) => Divider(),
+          itemCount: exerciseRecord.exerciseSets.length,
+          shrinkWrap: true,
         ),
         Divider()
       ],
@@ -106,9 +125,6 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
         Expanded(
             child: Center(
                 child: Container(
-//                decoration: BoxDecoration(
-//                    border: Border(
-//                        bottom: BorderSide(color: Colors.black38, width: 2.0))),
                     padding:
                         EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
                     margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -116,9 +132,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                         child: TextFormField(
                       initialValue: exerciseSet.weight.toString(),
                       onChanged: (val) {
-                        setState(() {
-                          exerciseSet.weight = int.parse(val);
-                        });
+                        exerciseSet.weight = int.parse(val);
                       },
                     )),
                     width: width,
@@ -128,9 +142,6 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
         Expanded(
             child: Center(
                 child: Container(
-//                decoration: BoxDecoration(
-//                    border: Border(
-//                        bottom: BorderSide(color: Colors.black38, width: 2.0))),
                     padding:
                         EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
                     margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -138,9 +149,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                         child: TextFormField(
                       initialValue: exerciseSet.reps.toString(),
                       onChanged: (val) {
-                        setState(() {
-                          exerciseSet.reps = int.parse(val);
-                        });
+                        exerciseSet.reps = int.parse(val);
                       },
                     )),
                     width: width,
