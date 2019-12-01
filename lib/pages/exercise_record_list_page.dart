@@ -14,6 +14,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   final TextEditingController createExerciseTextController =
       TextEditingController();
 
+  final String _title = 'Workout Log';
   List<ExerciseRecord> _exerciseRecords = [];
 
   @override
@@ -25,6 +26,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text(_title)),
       body: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
           final ExerciseRecord exerciseRecord = _exerciseRecords[index];
@@ -61,39 +63,38 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
     return Column(
       children: <Widget>[
         ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-          title: Text(exerciseRecord.exerciseName),
-          trailing: IconButton(
-            icon: Icon(Icons.add),
-            tooltip: 'Add a set',
-            color: Colors.deepOrangeAccent,
-            onPressed: () {
-              ExerciseSet exerciseSet = ExerciseSet(0, 0);
-              if (exerciseRecord.exerciseSets.isNotEmpty) {
-                ExerciseSet lastSet = exerciseRecord.exerciseSets.last;
-                exerciseSet.weight = lastSet.weight;
-                exerciseSet.reps = lastSet.reps;
-              }
-              exerciseRecord.exerciseSets.add(exerciseSet);
+            contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+            title: Text(exerciseRecord.exerciseName),
+            trailing: IconButton(
+              icon: Icon(Icons.add),
+              tooltip: 'Add a set',
+              color: Colors.deepOrangeAccent,
+              onPressed: () {
+                ExerciseSet exerciseSet = ExerciseSet(0, 0);
+                if (exerciseRecord.exerciseSets.isNotEmpty) {
+                  ExerciseSet lastSet = exerciseRecord.exerciseSets.last;
+                  exerciseSet.weight = lastSet.weight;
+                  exerciseSet.reps = lastSet.reps;
+                }
+                exerciseRecord.exerciseSets.add(exerciseSet);
+                setState(() {});
+              },
+            ),
+            onLongPress: () {
+              _getExerciseName(context, createExerciseTextController)
+                  .then((exerciseName) => {
+                        if (exerciseName != null)
+                          {exerciseRecord.exerciseName = exerciseName}
+                      });
               setState(() {});
             },
-          ),
-          onLongPress: () {
-            _getExerciseName(context, createExerciseTextController)
-                .then((exerciseName) => {
-                      if (exerciseName != null)
-                        {exerciseRecord.exerciseName = exerciseName}
-                    });
-            setState(() {});
-          },
-          onTap: () {
-            print(exerciseRecord);
-          }
-        ),
+            onTap: () {
+              print(exerciseRecord);
+            }),
         ListView.separated(
           itemBuilder: (BuildContext context, int setIndex) {
-
-            final ExerciseSet exerciseSet = exerciseRecord.exerciseSets[setIndex];
+            final ExerciseSet exerciseSet =
+                exerciseRecord.exerciseSets[setIndex];
 
             return Dismissible(
               key: Key(exerciseSet.hashCode.toString()),

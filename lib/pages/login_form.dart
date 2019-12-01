@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tokyo_mobile/sandbox/sandbox_http_request.dart';
 import 'package:tokyo_mobile/pages/exercise_record_list_page.dart';
 import 'package:tokyo_mobile/pages/signup_form.dart';
 import 'package:tokyo_mobile/sandbox/todo_list.dart';
@@ -77,41 +76,34 @@ class LogInFormState extends State<LogInForm> {
                               }),
                         )
                       ],
-                    )
-                ),
+                    )),
                 FloatingActionButton(
                   onPressed: () {
                     goToSandbox(context);
                   },
                 )
-
               ],
             )));
   }
 }
 
 void goToSignUp(BuildContext context) {
-  Navigator.push(context, MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return Scaffold(
-            body: Center(child: SignUpForm()));
-      }));
+  Navigator.push(context,
+      MaterialPageRoute<void>(builder: (BuildContext context) {
+    return Scaffold(body: Center(child: SignUpForm()));
+  }));
 }
 
 void goToExerciseRecordListView(BuildContext context) {
-  Navigator.push(context, MaterialPageRoute<void>(
-    builder: (BuildContext context) {
-      return Scaffold(
-        body: Center(child: ExerciseRecordListPage())
-      );
-    }
-  ));
+  Navigator.push(context,
+      MaterialPageRoute<void>(builder: (BuildContext context) {
+    return Scaffold(body: Center(child: ExerciseRecordListPage()));
+  }));
 }
 
 void goToSandbox(BuildContext context) {
-  Navigator.push(context, MaterialPageRoute<void>(
-    builder: (BuildContext context) {
-      return TodoApp();
-    }
-  ));
+  Navigator.push(context,
+      MaterialPageRoute<void>(builder: (BuildContext context) {
+    return TodoApp();
+  }));
 }
