@@ -35,7 +35,12 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
         child: Icon(Icons.add),
         backgroundColor: Colors.deepOrangeAccent,
         onPressed: () {
-          _createExercise(context, createExerciseTextController);
+          _getExerciseName(context, createExerciseTextController).then(
+              (exerciseName) => {
+                    if (exerciseName != null)
+                      _exerciseRecords.add(ExerciseRecord(exerciseName))
+                  });
+          setState(() {});
         },
       ),
     );
@@ -46,21 +51,33 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
     return Column(
       children: <Widget>[
         ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-            title: Text(exerciseRecord.exerciseName),
-            trailing: IconButton(
-              icon: Icon(Icons.add),
-              tooltip: 'Add a set',
-              color: Colors.deepOrangeAccent,
-              onPressed: () {
-                setState(() {
-                  exerciseRecord.exerciseSets.add(ExerciseSet(135, 5));
-                  print('${exerciseRecord.exerciseSets.length}');
-                });
-              },
-            ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+          title: Text(exerciseRecord.exerciseName),
+          trailing: IconButton(
+            icon: Icon(Icons.add),
+            tooltip: 'Add a set',
+            color: Colors.deepOrangeAccent,
+            onPressed: () {
+              ExerciseSet exerciseSet = ExerciseSet(0, 0);
+              if (exerciseRecord.exerciseSets.isNotEmpty) {
+                ExerciseSet lastSet = exerciseRecord.exerciseSets.last;
+                exerciseSet.weight = lastSet.weight;
+                exerciseSet.reps = lastSet.reps;
+              }
+              exerciseRecord.exerciseSets.add(exerciseSet);
+              setState(() {});
+            },
+          ),
           onLongPress: () {
-              print(exerciseRecord);
+            _getExerciseName(context, createExerciseTextController)
+                .then((exerciseName) => {
+                      if (exerciseName != null)
+                        {exerciseRecord.exerciseName = exerciseName}
+                    });
+            setState(() {});
+          },
+          onTap: () {
+            print(exerciseRecord);
           },
         ),
         Divider(),
@@ -80,7 +97,8 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   }
 
   Widget _displaySet(BuildContext context, int recordIndex, int setIndex) {
-    ExerciseSet exerciseSet = _exerciseRecords[recordIndex].exerciseSets[setIndex];
+    ExerciseSet exerciseSet =
+        _exerciseRecords[recordIndex].exerciseSets[setIndex];
     final double width = 57;
     final double height = 35;
     return Row(
@@ -91,19 +109,21 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
 //                decoration: BoxDecoration(
 //                    border: Border(
 //                        bottom: BorderSide(color: Colors.black38, width: 2.0))),
-                    padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
                     margin: EdgeInsets.symmetric(horizontal: 10.0),
                     child: Center(
                         child: TextFormField(
-                          initialValue: exerciseSet.weight.toString(),
-                          onChanged: (val) {
-                            setState(() {exerciseSet.weight = int.parse(val);});
-                          },
-                          onTap: () {
-                            print('${_exerciseRecords[recordIndex]}');
-                          },
-                        )
-                    ),
+                      initialValue: exerciseSet.weight.toString(),
+                      onChanged: (val) {
+                        setState(() {
+                          exerciseSet.weight = int.parse(val);
+                        });
+                      },
+                      onTap: () {
+                        print('${_exerciseRecords[recordIndex]}');
+                      },
+                    )),
                     width: width,
                     height: height))),
         Expanded(child: Center(child: Text('weight'))),
@@ -114,19 +134,21 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
 //                decoration: BoxDecoration(
 //                    border: Border(
 //                        bottom: BorderSide(color: Colors.black38, width: 2.0))),
-                    padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
                     margin: EdgeInsets.symmetric(horizontal: 10.0),
                     child: Center(
                         child: TextFormField(
-                          initialValue: exerciseSet.reps.toString(),
-                          onChanged: (val) {
-                            setState(() {exerciseSet.reps = int.parse(val);});
-                          },
-                          onTap: () {
-                            print('${_exerciseRecords[recordIndex]}');
-                          },
-                        )
-                    ),
+                      initialValue: exerciseSet.reps.toString(),
+                      onChanged: (val) {
+                        setState(() {
+                          exerciseSet.reps = int.parse(val);
+                        });
+                      },
+                      onTap: () {
+                        print('${_exerciseRecords[recordIndex]}');
+                      },
+                    )),
                     width: width,
                     height: height))),
         Expanded(child: Center(child: Text('rep(s)')))
@@ -134,9 +156,9 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
     );
   }
 
-  Future<void> _createExercise(
+  Future<String> _getExerciseName(
       BuildContext context, TextEditingController exerciseNameText) async {
-    return showDialog<void>(
+    String exerciseName = await showDialog<String>(
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
@@ -161,12 +183,9 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                       padding: EdgeInsets.only(right: 5.0),
                       child: FlatButton(
                           onPressed: () {
-                            _exerciseRecords
-                                .add(ExerciseRecord(exerciseNameText.text));
-                            setState(() {});
-                            Navigator.pop(context);
+                            Navigator.pop(context, exerciseNameText.text);
                           },
-                          child: const Text('Create')),
+                          child: const Text('Ok')),
                     ),
                     Padding(
                       padding: EdgeInsets.only(right: 5.0),
@@ -182,5 +201,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                 ),
               ]);
         });
+    exerciseNameText.clear();
+    return exerciseName;
   }
 }
