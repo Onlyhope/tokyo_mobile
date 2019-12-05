@@ -11,7 +11,11 @@ class LogInForm extends StatefulWidget {
 }
 
 class LogInFormState extends State<LogInForm> {
+
   final _formKey = GlobalKey<FormState>();
+
+  String _username = "";
+  String _password = "";
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +39,9 @@ class LogInFormState extends State<LogInForm> {
                     }
 
                     return null;
+                  },
+                  onSaved: (val) {
+                    _username = val;
                   },
                 ),
                 TextFormField(
@@ -61,7 +68,7 @@ class LogInFormState extends State<LogInForm> {
                             onPressed: () {
                               if (_formKey.currentState.validate()) {
                                 // Process data
-                                goToExerciseRecordListView(context);
+                                goToExerciseRecordListView(context, _username);
                               }
                             },
                           ),
@@ -94,7 +101,7 @@ void goToSignUp(BuildContext context) {
   }));
 }
 
-void goToExerciseRecordListView(BuildContext context) {
+void goToExerciseRecordListView(BuildContext context, String username) {
   Navigator.push(context,
       MaterialPageRoute<void>(builder: (BuildContext context) {
     return Scaffold(body: Center(child: ExerciseRecordListPage()));

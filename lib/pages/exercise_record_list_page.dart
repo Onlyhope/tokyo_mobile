@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:tokyo_mobile/services/exercise_record_service.dart';
 
 import '../models/exercise_record.dart';
 import '../models/exercise_set.dart';
 
 class ExerciseRecordListPage extends StatefulWidget {
+
+  final String username;
+
+  ExerciseRecordListPage({@required this.username});
+
   @override
   ExerciseRecordListPageState createState() {
     return ExerciseRecordListPageState();
@@ -11,11 +17,13 @@ class ExerciseRecordListPage extends StatefulWidget {
 }
 
 class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
+
+  final ExerciseRecordService exerciseRecordService = ExerciseRecordService();
   final TextEditingController createExerciseTextController =
       TextEditingController();
-
   final String _title = 'Workout Log';
-  List<ExerciseRecord> _exerciseRecords = [];
+
+  List<ExerciseRecord> _exerciseRecords = exerciseRecordService.fetchExerciseRecords();
 
   @override
   void dispose() {
