@@ -5,11 +5,10 @@ import 'package:tokyo_mobile/models/exercise_record.dart';
 
 class ExerciseRecordService {
   static const String _baseUrl = 'http://167.71.181.19:3050';
-  final String _dummyUser = 'aaron123';
 
-  Future<List<ExerciseRecord>> fetchExerciseRecords() async {
+  Future<List<ExerciseRecord>> fetchExerciseRecords(String username) async {
     final String fetchExerciseRecordsUrl =
-        _baseUrl + '/users/$_dummyUser/exercise-records/';
+        _baseUrl + '/users/$username/exercise-records/';
     Response response = await get(fetchExerciseRecordsUrl);
 
     List<ExerciseRecord> exerciseRecords = [];
@@ -25,9 +24,9 @@ class ExerciseRecordService {
     return exRecords;
   }
 
-  Future<int> createExerciseRecord(ExerciseRecord exerciseRecord) async {
+  Future<int> createExerciseRecord(String username, ExerciseRecord exerciseRecord) async {
     final String createExerciseRecordsUrl =
-        _baseUrl + '/users/$_dummyUser/exercise-records/';
+        _baseUrl + '/users/$username/exercise-records/';
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     Response response = await post(createExerciseRecordsUrl,
@@ -38,9 +37,9 @@ class ExerciseRecordService {
     return response.statusCode;
   }
 
-  Future<int> saveExerciseRecord(ExerciseRecord exerciseRecord, String id) async {
+  Future<int> saveExerciseRecord(String username, ExerciseRecord exerciseRecord, String id) async {
     final String saveExerciseRecordUrl =
-        _baseUrl + '/users/$_dummyUser/exercise-records/$id';
+        _baseUrl + '/users/$username/exercise-records/$id';
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     Response response = await post(saveExerciseRecordUrl,
@@ -49,9 +48,9 @@ class ExerciseRecordService {
     return response.statusCode;
   }
 
-  Future<int> deleteExerciseRecord(String id) async {
+  Future<int> deleteExerciseRecord(String username, String id) async {
     final String deleteExerciseRecordsUrl =
-        _baseUrl + '/users/$_dummyUser/exercise-records/$id';
+        _baseUrl + '/users/$username/exercise-records/$id';
 
     Response response = await delete(deleteExerciseRecordsUrl);
 
