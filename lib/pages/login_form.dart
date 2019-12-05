@@ -40,7 +40,7 @@ class LogInFormState extends State<LogInForm> {
 
                     return null;
                   },
-                  onSaved: (val) {
+                  onChanged: (val) {
                     _username = val;
                   },
                 ),
@@ -104,7 +104,7 @@ void goToSignUp(BuildContext context) {
 void goToExerciseRecordListView(BuildContext context, String username) {
   Navigator.push(context,
       MaterialPageRoute<void>(builder: (BuildContext context) {
-    return Scaffold(body: Center(child: ExerciseRecordListPage()));
+    return Scaffold(body: Center(child: ExerciseRecordListPage(username: username)));
   }));
 }
 

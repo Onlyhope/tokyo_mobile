@@ -9,9 +9,11 @@ class ExerciseRecordService {
   Future<List<ExerciseRecord>> fetchExerciseRecords(String username) async {
     final String fetchExerciseRecordsUrl =
         _baseUrl + '/users/$username/exercise-records/';
-    Response response = await get(fetchExerciseRecordsUrl);
 
-    List<ExerciseRecord> exerciseRecords = [];
+    print("Fetching exercises for $username... $fetchExerciseRecordsUrl");
+    Response response = await get(fetchExerciseRecordsUrl);
+    print("Response: ${response.body}");
+
     var data = json.decode(response.body) as List;
     List<ExerciseRecord> exRecords = [];
     for (dynamic record in data) {
@@ -29,6 +31,7 @@ class ExerciseRecordService {
         _baseUrl + '/users/$username/exercise-records/';
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
+    print("Creating exercise with $username... $createExerciseRecordsUrl");
     Response response = await post(createExerciseRecordsUrl,
         headers: headers, body: jsonEncode(exerciseRecord));
 
@@ -42,7 +45,7 @@ class ExerciseRecordService {
         _baseUrl + '/users/$username/exercise-records/$id';
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
-    Response response = await post(saveExerciseRecordUrl,
+    Response response = await put(saveExerciseRecordUrl,
         headers: headers, body: jsonEncode(exerciseRecord));
 
     return response.statusCode;
