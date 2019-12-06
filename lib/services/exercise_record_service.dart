@@ -8,11 +8,11 @@ class ExerciseRecordService {
 
   Future<List<ExerciseRecord>> fetchExerciseRecords(String username) async {
     final String fetchExerciseRecordsUrl =
-        _baseUrl + '/users/$username/exercise-records/';
+        '$_baseUrl/users/$username/exercise-records/';
 
-    print("Fetching exercises for $username... $fetchExerciseRecordsUrl");
+    print('Fetching exercises for $username... $fetchExerciseRecordsUrl');
     Response response = await get(fetchExerciseRecordsUrl);
-    print("Response: ${response.body}");
+    print('Response: ${response.body}');
 
     var data = json.decode(response.body) as List;
     List<ExerciseRecord> exRecords = [];
@@ -26,12 +26,24 @@ class ExerciseRecordService {
     return exRecords;
   }
 
-  Future<int> createExerciseRecord(String username, ExerciseRecord exerciseRecord) async {
-    final String createExerciseRecordsUrl =
-        _baseUrl + '/users/$username/exercise-records/';
+  Future<ExerciseRecord> fetchExerciseRecord(String username, String exRecId) async {
+    final String fetchAnExerciseRecordUrl =
+        '$_baseUrl/users/$username/exercise-records/$exRecId';
+
+    print('Fetching an exercise record for $username with exRecId: $exRecId');
+    Response response = await get(fetchAnExerciseRecordUrl);
+    print('Response: ${response.body} Status: ${response.statusCode}');
+
+    var exerciseRecord = jsonDecode(response.body);
+    return exerciseRecord;
+  }
+
+  Future<int> createExerciseRecord(
+      String username, ExerciseRecord exerciseRecord) async {
+    final String createExerciseRecordsUrl = '$_baseUrl/users/$username/exercise-records/';
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
-    print("Creating exercise with $username... $createExerciseRecordsUrl");
+    print('Creating exercise with $username... $createExerciseRecordsUrl');
     Response response = await post(createExerciseRecordsUrl,
         headers: headers, body: jsonEncode(exerciseRecord));
 
@@ -40,9 +52,10 @@ class ExerciseRecordService {
     return response.statusCode;
   }
 
-  Future<int> saveExerciseRecord(String username, ExerciseRecord exerciseRecord, String id) async {
+  Future<int> saveExerciseRecord(
+      String username, ExerciseRecord exerciseRecord, String id) async {
     final String saveExerciseRecordUrl =
-        _baseUrl + '/users/$username/exercise-records/$id';
+        '$_baseUrl/users/$username/exercise-records/$id';
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     Response response = await put(saveExerciseRecordUrl,

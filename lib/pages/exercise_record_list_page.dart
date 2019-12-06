@@ -5,7 +5,6 @@ import '../models/exercise_record.dart';
 import '../models/exercise_set.dart';
 
 class ExerciseRecordListPage extends StatefulWidget {
-
   final String username;
 
   ExerciseRecordListPage({@required this.username});
@@ -17,7 +16,6 @@ class ExerciseRecordListPage extends StatefulWidget {
 }
 
 class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
-
   final ExerciseRecordService exerciseRecordService = ExerciseRecordService();
   final TextEditingController createExerciseTextController =
       TextEditingController();
@@ -55,10 +53,16 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
           return Dismissible(
             key: Key(exerciseRecord.hashCode.toString()),
             child: _displayExerciseRecords(index),
-            onDismissed: (direction) {
-              setState(() {
-                _exerciseRecords.removeAt(index);
-              });
+            onDismissed: (direction) async {
+              int status = await exerciseRecordService.deleteExerciseRecord(
+                  _username, _exerciseRecords[index].exerciseRecId);
+              if (status >= 300) {
+                print('Error; $status');
+              } else if (status >= 200) {
+                await _updateExerciseRecords();
+              } else {
+                print('Illegal state: $status');
+              }
             },
           );
         },
@@ -71,17 +75,16 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
         onPressed: () async {
           String exerciseName =
               await _getExerciseName(context, createExerciseTextController);
-
           if (exerciseName == null) return;
 
           int status = await exerciseRecordService.createExerciseRecord(
               _username, ExerciseRecord(exerciseName));
           if (status >= 300) {
-            print("Error: $status");
+            print('Error: $status');
           } else if (status >= 200) {
             await _updateExerciseRecords();
           } else {
-            print("Illegal State: $status");
+            print('Illegal State: $status');
           }
         },
       ),
@@ -111,11 +114,13 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                     _username, exerciseRecord, exerciseRecord.exerciseRecId);
 
                 if (status >= 300) {
-                  print("Error: $status");
+                  print('Error: $status');
                 } else if (status >= 200) {
-                  await _updateExerciseRecords();
+                  _exerciseRecords[recordIndex] =
+                      await exerciseRecordService.fetchExerciseRecord(
+                          _username, exerciseRecord.exerciseRecId);
                 } else {
-                  print("Illegal State: $status");
+                  print('Illegal State: $status');
                 }
               },
             ),
@@ -124,13 +129,16 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                   await _getExerciseName(context, createExerciseTextController);
               if (exerciseName == null) return;
               exerciseRecord.exerciseName = exerciseName;
-              int status = await exerciseRecordService.saveExerciseRecord(_username, exerciseRecord, exerciseRecord.exerciseRecId);
+              int status = await exerciseRecordService.saveExerciseRecord(
+                  _username, exerciseRecord, exerciseRecord.exerciseRecId);
               if (status >= 300) {
-                print("Error: $status");
+                print('Error: $status');
               } else if (status >= 200) {
-                await _updateExerciseRecords();
+                _exerciseRecords[recordIndex] =
+                    await exerciseRecordService.fetchExerciseRecord(
+                        _username, exerciseRecord.exerciseRecId);
               } else {
-                print("Illegal State: $status");
+                print('Illegal State: $status');
               }
             },
             onTap: () {
@@ -144,10 +152,23 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
             return Dismissible(
               key: Key(exerciseSet.hashCode.toString()),
               child: _displaySet(context, recordIndex, setIndex),
-              onDismissed: (direction) {
-                setState(() {
-                  exerciseRecord.exerciseSets.removeAt(setIndex);
-                });
+              onDismissed: (direction) async {
+                ExerciseSet exerciseSetToRemove =
+                    exerciseRecord.exerciseSets[setIndex];
+                exerciseRecord.exerciseSets.removeAt(setIndex);
+                int status = await exerciseRecordService.saveExerciseRecord(
+                    _username, exerciseRecord, exerciseRecord.exerciseRecId);
+                if (status >= 300) {
+                  print('Error: $status');
+                  print('Adding back removed exercised');
+                  exerciseRecord.exerciseSets.insert(setIndex, exerciseSetToRemove);
+                } else if (status >= 200) {
+                  _exerciseRecords[recordIndex] =
+                  await exerciseRecordService.fetchExerciseRecord(
+                      _username, exerciseRecord.exerciseRecId);
+                } else {
+                  print('Illegal state: $status');
+                }
               },
               background: Container(color: Colors.red),
             );
@@ -189,11 +210,11 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                                 exerciseRecord,
                                 exerciseRecord.exerciseRecId);
                         if (status >= 300) {
-                          print("Error: $status");
+                          print('Error: $status');
                         } else if (status >= 200) {
                           await _updateExerciseRecords();
                         } else {
-                          print("Illegal State: $status");
+                          print('Illegal State: $status');
                         }
                       },
                     )),
@@ -222,11 +243,11 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                                 exerciseRecord,
                                 exerciseRecord.exerciseRecId);
                         if (status >= 300) {
-                          print("Error: $status");
+                          print('Error: $status');
                         } else if (status >= 200) {
                           await _updateExerciseRecords();
                         } else {
-                          print("Illegal State: $status");
+                          print('Illegal State: $status');
                         }
                       },
                     )),
