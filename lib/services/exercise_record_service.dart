@@ -34,7 +34,8 @@ class ExerciseRecordService {
     Response response = await get(fetchAnExerciseRecordUrl);
     print('Response: ${response.body} Status: ${response.statusCode}');
 
-    var exerciseRecord = jsonDecode(response.body);
+    ExerciseRecord exerciseRecord = jsonDecode(response.body);
+    print('exerciseRecord: $exerciseRecord');
     return exerciseRecord;
   }
 

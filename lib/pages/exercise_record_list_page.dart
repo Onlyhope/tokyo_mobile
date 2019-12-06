@@ -119,6 +119,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                   _exerciseRecords[recordIndex] =
                       await exerciseRecordService.fetchExerciseRecord(
                           _username, exerciseRecord.exerciseRecId);
+                  setState(() {});
                 } else {
                   print('Illegal State: $status');
                 }
@@ -137,6 +138,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                 _exerciseRecords[recordIndex] =
                     await exerciseRecordService.fetchExerciseRecord(
                         _username, exerciseRecord.exerciseRecId);
+                setState(() {});
               } else {
                 print('Illegal State: $status');
               }
@@ -166,6 +168,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                   _exerciseRecords[recordIndex] =
                   await exerciseRecordService.fetchExerciseRecord(
                       _username, exerciseRecord.exerciseRecId);
+                  setState(() {});
                 } else {
                   print('Illegal state: $status');
                 }
