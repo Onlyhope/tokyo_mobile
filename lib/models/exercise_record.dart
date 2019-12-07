@@ -12,6 +12,10 @@ class ExerciseRecord {
     createdDate = DateTime.now();
   }
 
+  String listTileTitle() {
+    return '$exerciseName -- ${createdDate.month}/${createdDate.day}';
+  }
+
   ExerciseRecord.fromJson(Map<String, dynamic> json) {
 
     List<ExerciseSet> setList = [];
