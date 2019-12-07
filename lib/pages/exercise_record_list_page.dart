@@ -97,7 +97,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
       children: <Widget>[
         ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-            title: Text('${exerciseRecord.listTileTitle()}'),
+            title: Text('${exerciseRecord.nameAndCreatedDate()}'),
             trailing: IconButton(
               icon: Icon(Icons.add),
               tooltip: 'Add a set',

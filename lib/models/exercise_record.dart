@@ -12,7 +12,7 @@ class ExerciseRecord {
     createdDate = DateTime.now();
   }
 
-  String listTileTitle() {
+  String nameAndCreatedDate() {
     return '$exerciseName -- ${createdDate.month}/${createdDate.day}';
   }
 
