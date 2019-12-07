@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.tokyo_mobile">
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
@@ -8,7 +8,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="tokyo_mobile"
+        android:label="Tokyo"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -30,4 +30,6 @@
             </intent-filter>
         </activity>
     </application>
+     <uses-permission android:name="android.permission.INTERNET"/>
+
 </manifest>
