@@ -26,7 +26,8 @@ class ExerciseRecordService {
     return exRecords;
   }
 
-  Future<ExerciseRecord> fetchExerciseRecord(String username, String exRecId) async {
+  Future<ExerciseRecord> fetchExerciseRecord(
+      String username, String exRecId) async {
     final String fetchAnExerciseRecordUrl =
         '$_baseUrl/users/$username/exercise-records/$exRecId';
 
@@ -34,14 +35,13 @@ class ExerciseRecordService {
     Response response = await get(fetchAnExerciseRecordUrl);
     print('Response: ${response.body} Status: ${response.statusCode}');
 
-    ExerciseRecord exerciseRecord = jsonDecode(response.body);
-    print('exerciseRecord: $exerciseRecord');
-    return exerciseRecord;
+    return ExerciseRecord.fromJson(json.decode(response.body));
   }
 
   Future<int> createExerciseRecord(
       String username, ExerciseRecord exerciseRecord) async {
-    final String createExerciseRecordsUrl = '$_baseUrl/users/$username/exercise-records/';
+    final String createExerciseRecordsUrl =
+        '$_baseUrl/users/$username/exercise-records/';
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     print('Creating exercise with $username... $createExerciseRecordsUrl');
