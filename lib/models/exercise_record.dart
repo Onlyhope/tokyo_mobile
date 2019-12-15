@@ -1,7 +1,6 @@
 import 'exercise_set.dart';
 
 class ExerciseRecord {
-
   String workoutId;
   String exerciseRecId;
   String exerciseName;
@@ -14,12 +13,19 @@ class ExerciseRecord {
     createdDate = DateTime.now();
   }
 
+  ExerciseRecord.value(
+      {this.workoutId,
+      this.exerciseRecId,
+      this.exerciseName,
+      this.exerciseSets,
+      this.createdDate,
+      this.completedDate});
+
   String nameAndCreatedDate() {
     return '$exerciseName -- ${createdDate.month}/${createdDate.day}';
   }
 
   ExerciseRecord.fromJson(Map<String, dynamic> json) {
-
     List<ExerciseSet> setList = [];
     var setsAsJson = json['sets'] as List;
     for (dynamic record in setsAsJson) {
