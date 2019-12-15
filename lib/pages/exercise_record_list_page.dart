@@ -5,9 +5,11 @@ import '../models/exercise_record.dart';
 import '../models/exercise_set.dart';
 
 class ExerciseRecordListPage extends StatefulWidget {
-  final String username;
 
-  ExerciseRecordListPage({@required this.username});
+  final String username;
+  final String workoutId;
+
+  ExerciseRecordListPage({@required this.username, @required this.workoutId});
 
   @override
   ExerciseRecordListPageState createState() {
@@ -21,12 +23,14 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
       TextEditingController();
   final String _title = 'Workout Log';
   String _username;
+  String _workoutId;
   List<ExerciseRecord> _exerciseRecords = [];
 
   @override
   void initState() {
     super.initState();
     _username = widget.username;
+    _workoutId = widget.workoutId;
 
     exerciseRecordService
         .fetchExerciseRecords(widget.username)
@@ -78,7 +82,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
           if (exerciseName == null) return;
 
           int status = await exerciseRecordService.createExerciseRecord(
-              _username, ExerciseRecord(exerciseName));
+              _username, ExerciseRecord(exerciseName, _workoutId));
           if (status >= 300) {
             print('Error: $status');
           } else if (status >= 200) {

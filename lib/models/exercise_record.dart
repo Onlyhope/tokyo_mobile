@@ -1,9 +1,8 @@
-import 'package:uuid/uuid.dart';
-
 import 'exercise_set.dart';
 
 class ExerciseRecord {
-  Uuid workoutId;
+
+  String workoutId;
   String exerciseRecId;
   String exerciseName;
   List<ExerciseSet> exerciseSets;
@@ -20,6 +19,7 @@ class ExerciseRecord {
   }
 
   ExerciseRecord.fromJson(Map<String, dynamic> json) {
+
     List<ExerciseSet> setList = [];
     var setsAsJson = json['sets'] as List;
     for (dynamic record in setsAsJson) {
