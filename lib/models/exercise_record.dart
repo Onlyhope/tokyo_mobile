@@ -1,13 +1,16 @@
+import 'package:uuid/uuid.dart';
+
 import 'exercise_set.dart';
 
 class ExerciseRecord {
+  Uuid workoutId;
   String exerciseRecId;
   String exerciseName;
   List<ExerciseSet> exerciseSets;
   DateTime createdDate;
   DateTime completedDate;
 
-  ExerciseRecord(this.exerciseName) {
+  ExerciseRecord(this.exerciseName, this.workoutId) {
     exerciseSets = [];
     createdDate = DateTime.now();
   }
@@ -17,7 +20,6 @@ class ExerciseRecord {
   }
 
   ExerciseRecord.fromJson(Map<String, dynamic> json) {
-
     List<ExerciseSet> setList = [];
     var setsAsJson = json['sets'] as List;
     for (dynamic record in setsAsJson) {
@@ -27,16 +29,20 @@ class ExerciseRecord {
     this.exerciseRecId = json['ex_rec_id'];
     this.exerciseName = json['exercise_name'];
     this.exerciseSets = setList;
-    this.createdDate = json['created_date'] == null ? null : DateTime.parse(json['created_date']);
-    this.completedDate = json['completed_date'] ==  null ? null : DateTime.parse(json['completed_date']);
+    this.createdDate = json['created_date'] == null
+        ? null
+        : DateTime.parse(json['created_date']);
+    this.completedDate = json['completed_date'] == null
+        ? null
+        : DateTime.parse(json['completed_date']);
   }
 
   Map<String, dynamic> toJson() => {
-    'exercise_name': exerciseName,
-    'sets': exerciseSets,
-    'created_date': createdDate.toString(),
-    'compeleted_date': completedDate.toString()
-  };
+        'exercise_name': exerciseName,
+        'sets': exerciseSets,
+        'created_date': createdDate.toString(),
+        'compeleted_date': completedDate.toString()
+      };
 
   @override
   String toString() {
@@ -46,5 +52,4 @@ class ExerciseRecord {
     }
     return 'ExerciseRecord{exerciseRecId: $exerciseRecId, exerciseName: $exerciseName}\n${exerciseSetsAsString}';
   }
-
 }
