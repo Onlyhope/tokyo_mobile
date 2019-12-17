@@ -2,6 +2,7 @@ import 'package:tokyo_mobile/models/exercise_record.dart';
 import 'package:uuid/uuid.dart';
 
 class DataTemplate {
+
   Uuid uuid = Uuid();
 
   ExerciseRecord exerciseRecord(
