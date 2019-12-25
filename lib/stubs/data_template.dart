@@ -31,43 +31,39 @@ class DataTemplate {
     String clipsEndOfMonth = uuid.v4();
 
     List<ExerciseRecord> start = [
-      DateTime.utc(2020, 10, 31, 23, 58, 30),
-      DateTime.utc(2020, 11, 01, 00, 00, 00),
-      DateTime.utc(2020, 11, 01, 00, 02, 30)
+      DateTime.utc(2019, 10, 31, 23, 58, 30),
+      DateTime.utc(2019, 11, 01, 00, 00, 00),
+      DateTime.utc(2019, 11, 01, 00, 02, 30)
     ].map((date) {
-      exerciseRecord(
-          exRecId: uuid.v4(), workoutId: clipsStartOfMonth, createdDate: date);
+      return exerciseRecord(exRecId: uuid.v4(), workoutId: clipsStartOfMonth, createdDate: date);
     }).toList();
 
     List<ExerciseRecord> regularOne = [
-      DateTime.utc(2020, 11, 15, 11, 54, 30),
-      DateTime.utc(2020, 11, 15, 11, 58, 30),
-      DateTime.utc(2020, 11, 15, 12, 00, 00),
-      DateTime.utc(2020, 11, 15, 12, 03, 15),
-      DateTime.utc(2020, 11, 15, 12, 07, 30)
+      DateTime.utc(2019, 11, 15, 11, 54, 30),
+      DateTime.utc(2019, 11, 15, 11, 58, 30),
+      DateTime.utc(2019, 11, 15, 12, 00, 00),
+      DateTime.utc(2019, 11, 15, 12, 03, 15),
+      DateTime.utc(2019, 11, 15, 12, 07, 30)
     ].map((date) {
-      exerciseRecord(
-          exRecId: uuid.v4(), workoutId: regularWorkout, createdDate: date);
+      return exerciseRecord(exRecId: uuid.v4(), workoutId: regularWorkout, createdDate: date);
     }).toList();
 
     List<ExerciseRecord> regularTwo = [
-      DateTime.utc(2020, 11, 17, 11, 54, 30),
-      DateTime.utc(2020, 11, 17, 11, 58, 30),
-      DateTime.utc(2020, 11, 17, 12, 00, 00),
-      DateTime.utc(2020, 11, 17, 12, 03, 15),
-      DateTime.utc(2020, 11, 17, 12, 07, 30)
+      DateTime.utc(2019, 11, 17, 11, 54, 30),
+      DateTime.utc(2019, 11, 17 , 11, 58, 30),
+      DateTime.utc(2019, 11, 17, 12, 00, 00),
+      DateTime.utc(2019, 11, 17, 12, 03, 15),
+      DateTime.utc(2019, 11, 17, 12, 07, 30)
     ].map((date) {
-      exerciseRecord(
-          exRecId: uuid.v4(), workoutId: regularWorkout, createdDate: date);
+      return exerciseRecord(exRecId: uuid.v4(), workoutId: regularWorkout, createdDate: date);
     }).toList();
 
     List<ExerciseRecord> end = [
-      DateTime.utc(2020, 11, 30, 23, 58, 30),
-      DateTime.utc(2020, 12, 01, 00, 00, 00),
-      DateTime.utc(2020, 12, 01, 00, 02, 30)
+      DateTime.utc(2019, 11, 30, 23, 58, 30),
+      DateTime.utc(2019, 12, 01, 00, 00, 00),
+      DateTime.utc(2019, 12, 01, 00, 02, 30)
     ].map((date) {
-      exerciseRecord(
-          exRecId: uuid.v4(), workoutId: clipsEndOfMonth, createdDate: date);
+      return exerciseRecord(exRecId: uuid.v4(), workoutId: clipsEndOfMonth, createdDate: date);
     }).toList();
 
     return start + regularOne + regularTwo + end;

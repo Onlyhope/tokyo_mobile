@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tokyo_mobile/models/exercise_record.dart';
+import 'package:tokyo_mobile/models/workout.dart';
 import 'package:tokyo_mobile/stubs/data_template.dart';
+import 'package:collection/collection.dart';
 
 class WorkoutCalendarOverview extends StatefulWidget {
   @override
@@ -14,13 +16,28 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
 
   final String _title = 'Workout Overview';
 
-  List<ExerciseRecord> monthOfExerciseRecords = DataTemplate().monthOfExerciseRecords();
+  List<ExerciseRecord> _monthOfExerciseRecords;
+  Map<DateTime, List<WorkoutRecord>> _workouts;
   CalendarController _calendarController;
 
   @override
   void initState() {
-    _calendarController = CalendarController();
     super.initState();
+    final _selectedDay = DateTime.now();
+    _calendarController = CalendarController();
+    _monthOfExerciseRecords = DataTemplate().monthOfExerciseRecords();
+    
+    Map<String, List<ExerciseRecord>> workouts = groupBy(_monthOfExerciseRecords, (exerciseRecord) => exerciseRecord.workoutId);
+    var workoutList = workouts.values.map((exerciseRecords) {
+      DateTime start = exerciseRecords.first.createdDate;
+      DateTime end = exerciseRecords.last.createdDate;
+      return WorkoutRecord(
+        exerciseRecords: exerciseRecords,
+        startDate: start,
+        endDate: end
+      );
+    });
+    _workouts = groupBy(workoutList, (workout) => workout.startDate);
   }
 
   @override
@@ -35,10 +52,21 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
         appBar: AppBar(title: Text(_title)),
         body: TableCalendar(
           calendarController: _calendarController,
+          events: _workouts,
+          calendarStyle: CalendarStyle(
+            canEventMarkersOverflow: false
+          ),
           headerStyle: HeaderStyle(
               formatButtonShowsNext: false,
               formatButtonVisible: false,
               centerHeaderTitle: true),
-        ));
+        ),
+      floatingActionButton: FloatingActionButton(
+        child: Text("Press"),
+        onPressed: () {
+          print("Workouts:\n$_workouts");
+        },
+      ),
+    );
   }
 }
