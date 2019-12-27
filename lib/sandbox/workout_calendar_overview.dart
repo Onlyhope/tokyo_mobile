@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tokyo_mobile/models/exercise_record.dart';
-import 'package:tokyo_mobile/models/exercise_set.dart';
 import 'package:tokyo_mobile/models/workout.dart';
 import 'package:tokyo_mobile/stubs/data_template.dart';
 import 'package:collection/collection.dart';
+import 'package:tokyo_mobile/widgets/ExerciseRecordView.dart';
 
 class WorkoutCalendarOverview extends StatefulWidget {
   @override
@@ -24,7 +24,6 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
   @override
   void initState() {
     super.initState();
-    final _selectedDay = DateTime.now();
     _calendarController = CalendarController();
     _monthOfExerciseRecords = DataTemplate().monthOfExerciseRecords();
 
@@ -46,11 +45,6 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
   }
 
   void _onDaySelected(DateTime day, List workouts) {
-    print("Today is ${day.toIso8601String()}");
-    print("You have done the following workout: ");
-    for (var workoutRecord in workouts) {
-      print("Workout: $workoutRecord");
-    }
     setState(() {
       _selectedWorkouts = workouts;
     });
@@ -63,39 +57,29 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_title)),
-      body: ListView(children: <Widget>[
-        TableCalendar(
-          calendarController: _calendarController,
-          events: _workouts,
-          calendarStyle: CalendarStyle(canEventMarkersOverflow: false),
-          headerStyle: HeaderStyle(
-              formatButtonShowsNext: false,
-              formatButtonVisible: false,
-              centerHeaderTitle: true),
-          onDaySelected: _onDaySelected,
-          onDayLongPressed: _onDayLongPressed,
-        ),
-        const SizedBox(height: 8.0),
-        Column(
-          children: _buildWorkoutRecords(_selectedWorkouts),
-        ),
-        const SizedBox(height: 8.0)
-      ]),
-      floatingActionButton: FloatingActionButton(
-          child: Text("Press"),
-          onPressed: () {
-            print("Selected Workout:\n$_selectedWorkouts");
-          }),
-    );
+        appBar: AppBar(title: Text(_title)),
+        body: ListView(children: <Widget>[
+          TableCalendar(
+              calendarController: _calendarController,
+              events: _workouts,
+              onDaySelected: _onDaySelected,
+              onDayLongPressed: _onDayLongPressed,
+              calendarStyle: CalendarStyle(canEventMarkersOverflow: false),
+              headerStyle: HeaderStyle(
+                  formatButtonShowsNext: false,
+                  formatButtonVisible: false,
+                  centerHeaderTitle: true)),
+          const SizedBox(height: 8.0),
+          Column(
+            children: _buildWorkoutRecords(_selectedWorkouts),
+          ),
+          const SizedBox(height: 8.0)
+        ]));
   }
 
-  // Flatten the Workout Records into a list of Exercise Records
-  // Display a list of Exercise Record as Expansion Tiles
-  // Color code each exercise record to its respective workout
   List<Widget> _buildWorkoutRecords(List workoutRecords) {
     if (workoutRecords == null) return [];
-    List<Color> colors = generateColors(workoutRecords.length);
+    List<Color> colors = _generateColors(workoutRecords.length);
     var pairs = List.generate(
         workoutRecords.length, (int i) => [workoutRecords[i], colors[i]]);
     return pairs
@@ -114,7 +98,7 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
     }
   }
 
-  List<Color> generateColors(int n) {
+  List<Color> _generateColors(int n) {
     List<Color> colorPool = [
       Color(0x77ff9aa2),
       Color(0x77ffb7b2),
@@ -129,61 +113,5 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
       colors[i] = colorPool[i % 6];
     }
     return colors;
-  }
-}
-
-class ExerciseRecordView extends StatelessWidget {
-  final ExerciseRecord _exerciseRecord;
-  final Color _bgColor;
-
-  ExerciseRecordView(this._exerciseRecord, this._bgColor);
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildExerciseRecordView(_exerciseRecord, _bgColor);
-  }
-
-  Widget _buildExerciseRecordView(
-      ExerciseRecord exerciseRecord, Color bgColor) {
-    if (exerciseRecord.exerciseSets.isEmpty) {
-      return Container(
-          child: ListTile(
-            title: Text(
-                exerciseRecord.exerciseName,
-              style: TextStyle(
-                color: Colors.black54
-              ),
-            ),
-            dense: true,
-          ),
-          margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 3.0),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(width: 2.0, color: bgColor)
-          )
-      );
-    }
-
-    return Container(
-      child: ExpansionTile(
-        key: PageStorageKey<ExerciseRecord>(exerciseRecord),
-        title: Text(exerciseRecord.exerciseName),
-        children: exerciseRecord.exerciseSets
-            .map((set) => _buildSetView(set))
-            .toList(),
-      ),
-        margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 3.0),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            border: Border.all(width: 2.0, color: bgColor)
-        )
-    );
-  }
-
-  Widget _buildSetView(ExerciseSet exerciseSet) {
-    return ListTile(
-      title: Text(exerciseSet.repsAndWeight()),
-      dense: true,
-    );
   }
 }
