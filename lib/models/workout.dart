@@ -8,4 +8,10 @@ class WorkoutRecord {
 
   WorkoutRecord({this.exerciseRecords, this.startDate, this.endDate});
 
+  @override
+  String toString() {
+    return 'WorkoutRecord{exerciseRecords: $exerciseRecords, startDate: $startDate, endDate: $endDate}';
+  }
+
+
 }

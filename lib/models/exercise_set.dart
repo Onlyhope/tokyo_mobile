@@ -7,6 +7,10 @@ class ExerciseSet {
 
   ExerciseSet(this.weight, this.reps);
 
+  String repsAndWeight() {
+    return "$reps x $weight";
+  }
+
   ExerciseSet.fromJson(Map<String, dynamic> json)
       : weight = json['weight'],
         reps = json['reps'];

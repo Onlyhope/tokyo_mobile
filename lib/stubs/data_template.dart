@@ -1,4 +1,5 @@
 import 'package:tokyo_mobile/models/exercise_record.dart';
+import 'package:tokyo_mobile/models/exercise_set.dart';
 import 'package:uuid/uuid.dart';
 
 class DataTemplate {
@@ -35,7 +36,10 @@ class DataTemplate {
       DateTime.utc(2019, 11, 01, 00, 00, 00),
       DateTime.utc(2019, 11, 01, 00, 02, 30)
     ].map((date) {
-      return exerciseRecord(exRecId: uuid.v4(), workoutId: clipsStartOfMonth, createdDate: date);
+      ExerciseRecord mockRecord = exerciseRecord(exRecId: uuid.v4(), workoutId: clipsStartOfMonth, createdDate: date);
+      mockRecord.exerciseName = 'Bench';
+      mockRecord.exerciseSets = [ExerciseSet(135, 5), ExerciseSet(155, 10), ExerciseSet(175, 10)];
+      return mockRecord;
     }).toList();
 
     List<ExerciseRecord> regularOne = [
@@ -45,7 +49,10 @@ class DataTemplate {
       DateTime.utc(2019, 11, 15, 12, 03, 15),
       DateTime.utc(2019, 11, 15, 12, 07, 30)
     ].map((date) {
-      return exerciseRecord(exRecId: uuid.v4(), workoutId: regularWorkout, createdDate: date);
+      ExerciseRecord mockRecord = exerciseRecord(exRecId: uuid.v4(), workoutId: regularWorkout, createdDate: date);
+      mockRecord.exerciseName = 'Deadlift';
+      mockRecord.exerciseSets = [ExerciseSet(135, 5), ExerciseSet(155, 10), ExerciseSet(175, 10)];
+      return mockRecord;
     }).toList();
 
     List<ExerciseRecord> regularTwo = [
@@ -55,7 +62,10 @@ class DataTemplate {
       DateTime.utc(2019, 11, 17, 12, 03, 15),
       DateTime.utc(2019, 11, 17, 12, 07, 30)
     ].map((date) {
-      return exerciseRecord(exRecId: uuid.v4(), workoutId: regularWorkout, createdDate: date);
+      ExerciseRecord mockRecord = exerciseRecord(exRecId: uuid.v4(), workoutId: regularWorkout, createdDate: date);
+      mockRecord.exerciseName = 'Squat';
+      mockRecord.exerciseSets = [ExerciseSet(135, 5), ExerciseSet(155, 10), ExerciseSet(175, 10)];
+      return mockRecord;
     }).toList();
 
     List<ExerciseRecord> end = [
@@ -63,7 +73,10 @@ class DataTemplate {
       DateTime.utc(2019, 12, 01, 00, 00, 00),
       DateTime.utc(2019, 12, 01, 00, 02, 30)
     ].map((date) {
-      return exerciseRecord(exRecId: uuid.v4(), workoutId: clipsEndOfMonth, createdDate: date);
+      ExerciseRecord mockRecord = exerciseRecord(exRecId: uuid.v4(), workoutId: clipsEndOfMonth, createdDate: date);
+      mockRecord.exerciseName = 'Military Press';
+      mockRecord.exerciseSets = [ExerciseSet(135, 5), ExerciseSet(155, 10), ExerciseSet(175, 10)];
+      return mockRecord;
     }).toList();
 
     return start + regularOne + regularTwo + end;
