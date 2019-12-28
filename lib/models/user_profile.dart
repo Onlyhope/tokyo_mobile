@@ -5,7 +5,7 @@ class UserProfile {
   int height; // in millimeters
   int weight; // in grams
   int age;
-  PersonalRecord pr;
+  PersonalRecords prs;
 
-  UserProfile({this.username, this.height, this.weight, this.age, this.pr});
+  UserProfile({this.username, this.height, this.weight, this.age, this.prs});
 }
