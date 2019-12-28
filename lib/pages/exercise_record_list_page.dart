@@ -5,7 +5,6 @@ import '../models/exercise_record.dart';
 import '../models/exercise_set.dart';
 
 class ExerciseRecordListPage extends StatefulWidget {
-
   final String username;
   final String workoutId;
 
@@ -22,6 +21,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   final TextEditingController createExerciseTextController =
       TextEditingController();
   final String _title = 'Workout Log';
+
   String _username;
   String _workoutId;
   List<ExerciseRecord> _exerciseRecords = [];
@@ -167,11 +167,12 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                 if (status >= 300) {
                   print('Error: $status');
                   print('Adding back removed exercised');
-                  exerciseRecord.exerciseSets.insert(setIndex, exerciseSetToRemove);
+                  exerciseRecord.exerciseSets
+                      .insert(setIndex, exerciseSetToRemove);
                 } else if (status >= 200) {
                   _exerciseRecords[recordIndex] =
-                  await exerciseRecordService.fetchExerciseRecord(
-                      _username, exerciseRecord.exerciseRecId);
+                      await exerciseRecordService.fetchExerciseRecord(
+                          _username, exerciseRecord.exerciseRecId);
                   setState(() {});
                 } else {
                   print('Illegal state: $status');
