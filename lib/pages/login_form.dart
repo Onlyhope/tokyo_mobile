@@ -13,7 +13,6 @@ class LogInForm extends StatefulWidget {
 }
 
 class LogInFormState extends State<LogInForm> {
-
   final _formKey = GlobalKey<FormState>();
 
   String _username = "";
@@ -107,7 +106,10 @@ void goToExerciseRecordListView(BuildContext context, String username) {
   Uuid uuid = Uuid();
   Navigator.push(context,
       MaterialPageRoute<void>(builder: (BuildContext context) {
-    return Scaffold(body: Center(child: ExerciseRecordListPage(username: username, workoutId: Uuid().v4())));
+    return Scaffold(
+        body: Center(
+            child: ExerciseRecordListPage(
+                username: username, workoutId: Uuid().v4())));
   }));
 }
 
