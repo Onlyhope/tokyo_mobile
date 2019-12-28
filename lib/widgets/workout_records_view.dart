@@ -9,10 +9,7 @@ class WorkoutRecordsView extends StatelessWidget {
   final List<WorkoutRecord> workoutRecords;
   final List<Color> colorPool;
 
-  WorkoutRecordsView({this.workoutRecords, this.colorPool}) {
-    workoutRecords
-        .retainWhere((workoutRecord) => workoutRecord is WorkoutRecord);
-  }
+  WorkoutRecordsView({this.workoutRecords, this.colorPool});
 
   @override
   Widget build(BuildContext context) {

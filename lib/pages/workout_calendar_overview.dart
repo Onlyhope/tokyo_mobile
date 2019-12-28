@@ -24,7 +24,7 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
     Color(0x77c7ceea)
   ];
 
-  List _selectedWorkouts;
+  List<WorkoutRecord> _selectedWorkouts;
   List<ExerciseRecord> _monthOfExerciseRecords;
   Map<DateTime, List<WorkoutRecord>> _workouts;
   CalendarController _calendarController;
@@ -50,7 +50,14 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
 
   void _onDaySelected(DateTime day, List workouts) {
     setState(() {
-      _selectedWorkouts = workouts;
+      _selectedWorkouts = workouts.map((workoutRecord) {
+        if (workoutRecord is WorkoutRecord) {
+          return workoutRecord;
+        } else {
+          return null;
+        }
+      }).toList();
+      _selectedWorkouts.removeWhere((workout) => workout == null);
     });
   }
 
