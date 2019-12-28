@@ -4,7 +4,7 @@ import 'package:tokyo_mobile/models/exercise_record.dart';
 import 'package:tokyo_mobile/models/workout.dart';
 import 'package:tokyo_mobile/stubs/data_template.dart';
 import 'package:collection/collection.dart';
-import 'package:tokyo_mobile/widgets/ExerciseRecordView.dart';
+import 'package:tokyo_mobile/widgets/workout_records_view.dart';
 
 class WorkoutCalendarOverview extends StatefulWidget {
   @override
@@ -15,6 +15,14 @@ class WorkoutCalendarOverview extends StatefulWidget {
 
 class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
   final String _title = 'Workout Overview';
+  final List<Color> colorPool = [
+    Color(0x77ff9aa2),
+    Color(0x77ffb7b2),
+    Color(0x77ffdac1),
+    Color(0x77e2f0cb),
+    Color(0x77b5ead7),
+    Color(0x77c7ceea)
+  ];
 
   List _selectedWorkouts;
   List<ExerciseRecord> _monthOfExerciseRecords;
@@ -29,12 +37,8 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
 
     Map<String, List<ExerciseRecord>> workouts = groupBy(
         _monthOfExerciseRecords, (exerciseRecord) => exerciseRecord.workoutId);
-    var workoutList = workouts.values.map((exerciseRecords) {
-      DateTime start = exerciseRecords.first.createdDate;
-      DateTime end = exerciseRecords.last.createdDate;
-      return WorkoutRecord(
-          exerciseRecords: exerciseRecords, startDate: start, endDate: end);
-    });
+    var workoutList = workouts.values.map((exerciseRecords) =>
+        WorkoutRecord.fromExerciseRecords(exerciseRecords: exerciseRecords));
     _workouts = groupBy(workoutList, (workout) => workout.startDate);
   }
 
@@ -70,48 +74,9 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
                   formatButtonVisible: false,
                   centerHeaderTitle: true)),
           const SizedBox(height: 8.0),
-          Column(
-            children: _buildWorkoutRecords(_selectedWorkouts),
-          ),
+          WorkoutRecordsView(workoutRecords: _selectedWorkouts, colorPool: colorPool),
           const SizedBox(height: 8.0)
         ]));
   }
 
-  List<Widget> _buildWorkoutRecords(List workoutRecords) {
-    if (workoutRecords == null) return [];
-    List<Color> colors = _generateColors(workoutRecords.length);
-    var pairs = List.generate(
-        workoutRecords.length, (int i) => [workoutRecords[i], colors[i]]);
-    return pairs
-        .map((pair) => _toExerciseRecordView(pair[0], pair[1]))
-        .expand((item) => item)
-        .toList();
-  }
-
-  List<Widget> _toExerciseRecordView(workout, Color bgColor) {
-    if (workout is WorkoutRecord) {
-      return workout.exerciseRecords
-          .map((exerciseRecord) => ExerciseRecordView(exerciseRecord, bgColor))
-          .toList();
-    } else {
-      return [];
-    }
-  }
-
-  List<Color> _generateColors(int n) {
-    List<Color> colorPool = [
-      Color(0x77ff9aa2),
-      Color(0x77ffb7b2),
-      Color(0x77ffdac1),
-      Color(0x77e2f0cb),
-      Color(0x77b5ead7),
-      Color(0x77c7ceea)
-    ];
-
-    List<Color> colors = List(n);
-    for (int i = 0; i < colors.length; i++) {
-      colors[i] = colorPool[i % 6];
-    }
-    return colors;
-  }
 }
