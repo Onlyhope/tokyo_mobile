@@ -30,14 +30,10 @@ class WorkoutRecordsView extends StatelessWidget {
         .toList();
   }
 
-  List<Widget> _toExerciseRecordView(var workout, Color bgColor) {
-    if (workout is WorkoutRecord) {
-      return workout.exerciseRecords
-          .map((exerciseRecord) => ExerciseRecordView(exerciseRecord, bgColor))
-          .toList();
-    } else {
-      return [];
-    }
+  List<Widget> _toExerciseRecordView(WorkoutRecord workout, Color bgColor) {
+    return workout.exerciseRecords
+        .map((exerciseRecord) => ExerciseRecordView(exerciseRecord, bgColor))
+        .toList();
   }
 
   List<Color> _generateColors(int n, List<Color> colorPool) {
