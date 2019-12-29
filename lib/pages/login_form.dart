@@ -3,6 +3,7 @@ import 'package:tokyo_mobile/pages/exercise_record_list_page.dart';
 import 'package:tokyo_mobile/pages/signup_form.dart';
 import 'package:tokyo_mobile/pages/workout_calendar_overview.dart';
 import 'package:tokyo_mobile/sandbox/dashboard.dart';
+import 'package:tokyo_mobile/sandbox/todo_list.dart';
 import 'package:uuid/uuid.dart';
 
 class LogInForm extends StatefulWidget {
@@ -105,13 +106,13 @@ void goToSignUp(BuildContext context) {
 void _goToDashboard(BuildContext context, String username) {
   Navigator.push(context,
       MaterialPageRoute<void>(builder: (BuildContext context) {
-    return Dashboard();
+    return Dashboard(username);
   }));
 }
 
 void goToSandbox(BuildContext context) {
   Navigator.push(context,
       MaterialPageRoute<void>(builder: (BuildContext context) {
-    return Dashboard();
+    return TodoApp();
   }));
 }

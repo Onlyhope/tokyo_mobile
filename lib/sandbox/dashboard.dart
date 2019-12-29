@@ -11,15 +11,24 @@ import 'package:tokyo_mobile/widgets/workout_records_view.dart';
 import 'package:uuid/uuid.dart';
 
 class Dashboard extends StatefulWidget {
+  final String username;
+
+  Dashboard(this.username);
+
   @override
   DashboardState createState() {
-    return DashboardState();
+    return DashboardState(username);
   }
 }
 
 class DashboardState extends State<Dashboard> {
   WorkoutRecord lastWorkout;
   UserProfile userProfile;
+  String username;
+
+  DashboardState(String username) {
+    this.username = username;
+  }
 
   @override
   void initState() {
@@ -34,7 +43,7 @@ class DashboardState extends State<Dashboard> {
         age: 26,
         weight: UnitConverter.lbsToGrams(163),
         height: UnitConverter.inchesToMillimeters(65),
-        username: 'husky629',
+        username: username,
         prs: mockPrs);
 
     userProfile = mockUserProfile;
@@ -55,7 +64,8 @@ class DashboardState extends State<Dashboard> {
           Container(
               padding: EdgeInsets.symmetric(vertical: 10.0),
               child: Center(
-                  child: Text('Last Workout',
+                  child: Text(
+                'Last Workout',
                 style: TextStyle(fontSize: 18.0),
               ))),
           WorkoutRecordsView(
@@ -67,7 +77,7 @@ class DashboardState extends State<Dashboard> {
           child: ListView(children: [
         UserAccountsDrawerHeader(
           accountName: Text(userProfile.username),
-          accountEmail: Text('leeaaron326@gmail.com'),
+          accountEmail: Text(userProfile.username),
           currentAccountPicture: CircleAvatar(
               child: Image(
                 image: AssetImage('assets/avatars/avatar.png'),
@@ -112,19 +122,17 @@ class DashboardState extends State<Dashboard> {
   }
 
   void _goToExerciseOverview(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return WorkoutCalendarOverview();
-      }
-    ));
+    Navigator.push(context,
+        MaterialPageRoute<void>(builder: (BuildContext context) {
+      return WorkoutCalendarOverview();
+    }));
   }
 
   void _goToWorkoutCreationPage(BuildContext context, String username) {
-    Navigator.push(context, MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return ExerciseRecordListPage(username: username, workoutId: Uuid().v4());
-      }
-    ));
+    Navigator.push(context,
+        MaterialPageRoute<void>(builder: (BuildContext context) {
+      return ExerciseRecordListPage(username: username, workoutId: Uuid().v4());
+    }));
   }
 }
 
