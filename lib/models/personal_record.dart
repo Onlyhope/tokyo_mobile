@@ -5,4 +5,10 @@ class PersonalRecords {
   int deadLift;
 
   PersonalRecords({this.squat, this.bench, this.deadLift});
+
+  @override
+  String toString() {
+    return 'PersonalRecords{squat: $squat, bench: $bench, deadLift: $deadLift}';
+  }
+
 }

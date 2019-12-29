@@ -69,7 +69,7 @@ class LogInFormState extends State<LogInForm> {
                             onPressed: () {
                               if (_formKey.currentState.validate()) {
                                 // Process data
-                                goToExerciseRecordListView(context, _username);
+                                _goToDashboard(context, _username);
                               }
                             },
                           ),
@@ -102,14 +102,10 @@ void goToSignUp(BuildContext context) {
   }));
 }
 
-void goToExerciseRecordListView(BuildContext context, String username) {
-  Uuid uuid = Uuid();
+void _goToDashboard(BuildContext context, String username) {
   Navigator.push(context,
       MaterialPageRoute<void>(builder: (BuildContext context) {
-    return Scaffold(
-        body: Center(
-            child: ExerciseRecordListPage(
-                username: username, workoutId: Uuid().v4())));
+    return Dashboard();
   }));
 }
 

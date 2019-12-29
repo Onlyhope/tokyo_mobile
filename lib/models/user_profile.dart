@@ -8,4 +8,10 @@ class UserProfile {
   PersonalRecords prs;
 
   UserProfile({this.username, this.height, this.weight, this.age, this.prs});
+
+  @override
+  String toString() {
+    return 'UserProfile{username: $username, height: $height, weight: $weight, age: $age, prs: $prs}';
+  }
+
 }

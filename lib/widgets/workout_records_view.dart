@@ -64,10 +64,11 @@ class ExerciseRecordView extends StatelessWidget {
             ),
             dense: true,
           ),
-          margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 3.0),
+          margin: EdgeInsets.only(top: 3.0),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(width: 2.0, color: bgColor)));
+              border: Border.all(width: 2.0, color: bgColor))
+      );
     }
 
     return Container(
@@ -78,10 +79,11 @@ class ExerciseRecordView extends StatelessWidget {
               .map((set) => _buildSetView(set))
               .toList(),
         ),
-        margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 3.0),
+        margin: EdgeInsets.only(top: 3.0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.0),
-            border: Border.all(width: 2.0, color: bgColor)));
+            border: Border.all(width: 2.0, color: bgColor))
+    );
   }
 
   Widget _buildSetView(ExerciseSet exerciseSet) {
