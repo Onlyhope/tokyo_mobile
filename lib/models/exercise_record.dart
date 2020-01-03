@@ -35,12 +35,12 @@ class ExerciseRecord {
     this.exerciseRecId = json['ex_rec_id'];
     this.exerciseName = json['exercise_name'];
     this.exerciseSets = setList;
-    this.createdDate = json['created_date'] == null
-        ? null
-        : DateTime.parse(json['created_date']);
-    this.completedDate = json['completed_date'] == null
-        ? null
-        : DateTime.parse(json['completed_date']);
+    this.createdDate = json['created_date'] != null
+        ? DateTime.parse(json['created_date'])
+        : null;
+    this.completedDate = json['completed_date'] != null
+        ? DateTime.parse(json['completed_date'])
+        : null;
   }
 
   Map<String, dynamic> toJson() => {
