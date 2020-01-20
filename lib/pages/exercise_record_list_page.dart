@@ -147,6 +147,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                     child: Center(
                         child: TextFormField(
                       initialValue: exerciseSet.weight.toString(),
+                      keyboardType: TextInputType.number,
                       onChanged: (val) => exerciseSet.weight = int.parse(val),
                       onEditingComplete: () async {
                         await exerciseRecordService.saveExerciseRecord(
@@ -164,6 +165,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
           child: Center(
               child: TextFormField(
             initialValue: exerciseSet.reps.toString(),
+            keyboardType: TextInputType.number,
             onChanged: (val) => exerciseSet.reps = int.parse(val),
             onEditingComplete: () async {
               await exerciseRecordService.saveExerciseRecord(
