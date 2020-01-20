@@ -31,14 +31,6 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
     super.initState();
     _username = widget.username;
     _workoutId = widget.workoutId;
-
-    exerciseRecordService
-        .fetchExerciseRecords(widget.username)
-        .then((exerciseRecords) {
-      setState(() {
-        _exerciseRecords = exerciseRecords;
-      });
-    });
   }
 
   @override
@@ -51,149 +43,99 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(_title)),
-      body: ListView.builder(
-        itemBuilder: (BuildContext context, int index) {
-          final ExerciseRecord exerciseRecord = _exerciseRecords[index];
-          return Dismissible(
-            key: Key(exerciseRecord.hashCode.toString()),
-            child: _displayExerciseRecords(index),
-            onDismissed: (direction) async {
-              int status = await exerciseRecordService.deleteExerciseRecord(
-                  _username, _exerciseRecords[index].exerciseRecId);
-              if (status >= 300) {
-                print('Error; $status');
-              } else if (status >= 200) {
-                await _updateExerciseRecords();
-              } else {
-                print('Illegal state: $status');
-              }
-            },
-          );
-        },
-        itemCount: _exerciseRecords.length,
-        shrinkWrap: true,
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Colors.deepOrangeAccent,
-        onPressed: () async {
-          String exerciseName =
-              await _getExerciseName(context, createExerciseTextController);
-          if (exerciseName == null) return;
+      body: Container(
+        child: FutureBuilder<List<ExerciseRecord>>(
+          future: exerciseRecordService.fetchExerciseRecords(_username),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            print("Snapshot Error: ${snapshot.hasError}");
 
-          int status = await exerciseRecordService.createExerciseRecord(
-              _username, ExerciseRecord(exerciseName, _workoutId));
-          if (status >= 300) {
-            print('Error: $status');
-          } else if (status >= 200) {
-            await _updateExerciseRecords();
-          } else {
-            print('Illegal State: $status');
-          }
-        },
+            print("Snapshot Error: ${snapshot.error}");
+
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Container(child: Text('Loading...'));
+                break;
+              case ConnectionState.waiting:
+                return Container(child: Text('Loading...'));
+                break;
+              case ConnectionState.active:
+                return Container(child: Text('Loading...'));
+                break;
+              case ConnectionState.done:
+                List<ExerciseRecord> exerciseRecords = snapshot.data;
+                return _displayExerciseRecordList(exerciseRecords);
+            }
+
+            return Container();
+          },
+        ),
       ),
+      floatingActionButton: _addExerciseRecordButton(),
     );
   }
 
-  Widget _displayExerciseRecords(int recordIndex) {
-    ExerciseRecord exerciseRecord = _exerciseRecords[recordIndex];
+  Widget _displayExerciseRecordList(List<ExerciseRecord> exerciseRecords) {
+    print('Exercise Records: $exerciseRecords');
+    return ListView.builder(
+        itemBuilder: (context, index) {
+          return _displayAnExerciseRecord(exerciseRecords[index]);
+        },
+        itemCount: exerciseRecords.length);
+  }
+
+  Widget _displayAnExerciseRecord(ExerciseRecord exerciseRecord) {
+    print('Exercise Record to display: $exerciseRecord');
     return Column(
       children: <Widget>[
         ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-            title: Text('${exerciseRecord.nameAndCreatedDate()}'),
-            trailing: IconButton(
-              icon: Icon(Icons.add),
-              tooltip: 'Add a set',
-              color: Colors.deepOrangeAccent,
-              onPressed: () async {
-                ExerciseSet exerciseSet = ExerciseSet(0, 0);
-                if (exerciseRecord.exerciseSets.isNotEmpty) {
-                  ExerciseSet lastSet = exerciseRecord.exerciseSets.last;
-                  exerciseSet.weight = lastSet.weight;
-                  exerciseSet.reps = lastSet.reps;
-                }
-                exerciseRecord.exerciseSets.add(exerciseSet);
-                int status = await exerciseRecordService.saveExerciseRecord(
-                    _username, exerciseRecord, exerciseRecord.exerciseRecId);
-
-                if (status >= 300) {
-                  print('Error: $status');
-                } else if (status >= 200) {
-                  _exerciseRecords[recordIndex] =
-                      await exerciseRecordService.fetchExerciseRecord(
-                          _username, exerciseRecord.exerciseRecId);
-                  setState(() {});
-                } else {
-                  print('Illegal State: $status');
-                }
-              },
-            ),
-            onLongPress: () async {
-              String exerciseName =
-                  await _getExerciseName(context, createExerciseTextController);
-              if (exerciseName == null) return;
-              exerciseRecord.exerciseName = exerciseName;
-              int status = await exerciseRecordService.saveExerciseRecord(
-                  _username, exerciseRecord, exerciseRecord.exerciseRecId);
-              if (status >= 300) {
-                print('Error: $status');
-              } else if (status >= 200) {
-                _exerciseRecords[recordIndex] =
-                    await exerciseRecordService.fetchExerciseRecord(
-                        _username, exerciseRecord.exerciseRecId);
-                setState(() {});
-              } else {
-                print('Illegal State: $status');
+          contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+          title: Text('${exerciseRecord.nameAndCreatedDate()}'),
+          trailing: IconButton(
+            icon: Icon(Icons.add),
+            tooltip: 'Add a set',
+            color: Colors.deepOrangeAccent,
+            onPressed: () async {
+              int weight = 0;
+              int reps = 0;
+              if (exerciseRecord.exerciseSets.isNotEmpty) {
+                ExerciseSet lastSet = exerciseRecord.exerciseSets.last;
+                weight = lastSet.weight;
+                reps = lastSet.reps;
               }
+              exerciseRecord.exerciseSets.add(ExerciseSet(weight, reps));
+              await exerciseRecordService.saveExerciseRecord(
+                  _username, exerciseRecord, exerciseRecord.exerciseRecId);
+              setState(() {});
             },
-            onTap: () {
-              print(exerciseRecord);
-            }),
-        ListView.separated(
-          itemBuilder: (BuildContext context, int setIndex) {
-            final ExerciseSet exerciseSet =
-                exerciseRecord.exerciseSets[setIndex];
-
-            return Dismissible(
-              key: Key(exerciseSet.hashCode.toString()),
-              child: _displaySet(context, recordIndex, setIndex),
-              onDismissed: (direction) async {
-                ExerciseSet exerciseSetToRemove =
-                    exerciseRecord.exerciseSets[setIndex];
-                exerciseRecord.exerciseSets.removeAt(setIndex);
-                int status = await exerciseRecordService.saveExerciseRecord(
-                    _username, exerciseRecord, exerciseRecord.exerciseRecId);
-                if (status >= 300) {
-                  print('Error: $status');
-                  print('Adding back removed exercised');
-                  exerciseRecord.exerciseSets
-                      .insert(setIndex, exerciseSetToRemove);
-                } else if (status >= 200) {
-                  _exerciseRecords[recordIndex] =
-                      await exerciseRecordService.fetchExerciseRecord(
-                          _username, exerciseRecord.exerciseRecId);
-                  setState(() {});
-                } else {
-                  print('Illegal state: $status');
-                }
-              },
-              background: Container(color: Colors.red),
-            );
-          },
-          separatorBuilder: (BuildContext context, int i) => Divider(),
-          itemCount: exerciseRecord.exerciseSets.length,
-          shrinkWrap: true,
+          ),
         ),
-        Divider()
+        ListView.separated(
+            itemBuilder: (BuildContext context, int setIndex) {
+              final ExerciseSet exerciseSet =
+                  exerciseRecord.exerciseSets[setIndex];
+              return Dismissible(
+                key: Key(exerciseSet.hashCode.toString()),
+                child: _displaySet(context, exerciseSet, exerciseRecord),
+                onDismissed: (direction) async {
+                  exerciseRecord.exerciseSets.removeAt(setIndex);
+                  await exerciseRecordService.saveExerciseRecord(
+                      _username, exerciseRecord, exerciseRecord.exerciseRecId);
+                  setState(() {});
+                },
+                background: Container(color: Colors.red),
+              );
+            },
+            shrinkWrap: true,
+            separatorBuilder: (BuildContext context, int) => Divider(),
+            itemCount: exerciseRecord.exerciseSets.length)
       ],
     );
   }
 
-  Widget _displaySet(BuildContext context, int recordIndex, int setIndex) {
-    ExerciseSet exerciseSet =
-        _exerciseRecords[recordIndex].exerciseSets[setIndex];
+  Widget _displaySet(
+      BuildContext context, ExerciseSet exerciseSet, ExerciseRecord parent) {
     final double width = 70;
+
     final double height = 35;
     return Row(
       children: <Widget>[
@@ -201,29 +143,14 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
             child: Center(
                 child: Container(
                     padding:
-                        EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
-                    margin: EdgeInsets.symmetric(horizontal: 10.0),
+                        EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
                     child: Center(
                         child: TextFormField(
                       initialValue: exerciseSet.weight.toString(),
-                      onChanged: (val) {
-                        exerciseSet.weight = int.parse(val);
-                      },
+                      onChanged: (val) => exerciseSet.weight = int.parse(val),
                       onEditingComplete: () async {
-                        ExerciseRecord exerciseRecord =
-                            _exerciseRecords[recordIndex];
-                        int status =
-                            await exerciseRecordService.saveExerciseRecord(
-                                _username,
-                                exerciseRecord,
-                                exerciseRecord.exerciseRecId);
-                        if (status >= 300) {
-                          print('Error: $status');
-                        } else if (status >= 200) {
-                          await _updateExerciseRecords();
-                        } else {
-                          print('Illegal State: $status');
-                        }
+                        await exerciseRecordService.saveExerciseRecord(
+                            _username, parent, parent.exerciseRecId);
                       },
                     )),
                     width: width,
@@ -233,45 +160,37 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
         Expanded(
             child: Center(
                 child: Container(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
-                    margin: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Center(
-                        child: TextFormField(
-                      initialValue: exerciseSet.reps.toString(),
-                      onChanged: (val) {
-                        exerciseSet.reps = int.parse(val);
-                      },
-                      onEditingComplete: () async {
-                        ExerciseRecord exerciseRecord =
-                            _exerciseRecords[recordIndex];
-                        int status =
-                            await exerciseRecordService.saveExerciseRecord(
-                                _username,
-                                exerciseRecord,
-                                exerciseRecord.exerciseRecId);
-                        if (status >= 300) {
-                          print('Error: $status');
-                        } else if (status >= 200) {
-                          await _updateExerciseRecords();
-                        } else {
-                          print('Illegal State: $status');
-                        }
-                      },
-                    )),
-                    width: width,
-                    height: height))),
+          padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
+          child: Center(
+              child: TextFormField(
+            initialValue: exerciseSet.reps.toString(),
+            onChanged: (val) => exerciseSet.reps = int.parse(val),
+            onEditingComplete: () async {
+              await exerciseRecordService.saveExerciseRecord(
+                  _username, parent, parent.exerciseRecId);
+            },
+          )),
+          width: width,
+          height: height,
+        ))),
         Expanded(child: Center(child: Text('rep(s)')))
       ],
     );
   }
 
-  Future _updateExerciseRecords() async {
-    List<ExerciseRecord> exerciseRecords =
-        await exerciseRecordService.fetchExerciseRecords(_username);
-    setState(() {
-      _exerciseRecords = exerciseRecords;
-    });
+  FloatingActionButton _addExerciseRecordButton() {
+    return FloatingActionButton(
+      child: Icon(Icons.add),
+      backgroundColor: Colors.deepOrangeAccent,
+      onPressed: () async {
+        String exerciseName =
+            await _getExerciseName(context, createExerciseTextController);
+        if (exerciseName == null || exerciseName.isEmpty) return;
+        await exerciseRecordService.createExerciseRecord(
+            _username, ExerciseRecord(exerciseName, _workoutId));
+        setState(() {});
+      },
+    );
   }
 
   Future<String> _getExerciseName(

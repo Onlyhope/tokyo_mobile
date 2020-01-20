@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:tokyo_mobile/models/exercise_record.dart';
 
 class ExerciseRecordService {
-  static const String _baseUrl = 'http://167.71.181.19:3050';
+  static const String _baseUrl = 'http://167.71.181.19:3000';
 
   Future<List<ExerciseRecord>> fetchExerciseRecords(String username) async {
     final String fetchExerciseRecordsUrl =
@@ -72,5 +72,16 @@ class ExerciseRecordService {
     Response response = await delete(deleteExerciseRecordsUrl);
 
     return response.statusCode;
+  }
+
+  List jsonToExerciseRecords(var exerciseRecordsAsJson) {
+    if (exerciseRecordsAsJson == null) return [];
+    var exerciseRecords = [];
+//    var exerciseRecordsJson = jsonDecode(exerciseRecordsAsJson);
+//    for (dynamic record in exerciseRecordsJson) {
+////      exerciseRecords.add(ExerciseRecord.fromJson(record));
+//    }
+//    print("Result: $exerciseRecords");
+    return exerciseRecords;
   }
 }
