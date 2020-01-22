@@ -77,11 +77,6 @@ class ExerciseRecordService {
   List jsonToExerciseRecords(var exerciseRecordsAsJson) {
     if (exerciseRecordsAsJson == null) return [];
     var exerciseRecords = [];
-//    var exerciseRecordsJson = jsonDecode(exerciseRecordsAsJson);
-//    for (dynamic record in exerciseRecordsJson) {
-////      exerciseRecords.add(ExerciseRecord.fromJson(record));
-//    }
-//    print("Result: $exerciseRecords");
     return exerciseRecords;
   }
 }
