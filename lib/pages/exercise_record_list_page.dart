@@ -24,7 +24,6 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
 
   String _username;
   String _workoutId;
-  List<ExerciseRecord> _exerciseRecords = [];
 
   @override
   void initState() {
@@ -85,31 +84,23 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
 
   Widget _displayAnExerciseRecord(ExerciseRecord exerciseRecord) {
     print('Exercise Record to display: $exerciseRecord');
-    return Column(
-      children: <Widget>[
-        ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-          title: Text('${exerciseRecord.nameAndCreatedDate()}'),
-          trailing: IconButton(
-            icon: Icon(Icons.add),
-            tooltip: 'Add a set',
-            color: Colors.deepOrangeAccent,
-            onPressed: () async {
-              int weight = 0;
-              int reps = 0;
-              if (exerciseRecord.exerciseSets.isNotEmpty) {
-                ExerciseSet lastSet = exerciseRecord.exerciseSets.last;
-                weight = lastSet.weight;
-                reps = lastSet.reps;
-              }
-              exerciseRecord.exerciseSets.add(ExerciseSet(weight, reps));
-              await exerciseRecordService.saveExerciseRecord(
-                  _username, exerciseRecord, exerciseRecord.exerciseRecId);
-              setState(() {});
-            },
+    return Card(
+      margin: EdgeInsets.all(8.0),
+      elevation: 3.0,
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+            leading: FlutterLogo(),
+            title: Text('${exerciseRecord.nameAndCreatedDate()}'),
+            trailing: IconButton(
+              icon: Icon(Icons.more_vert),
+              tooltip: 'Add a set',
+              color: Colors.deepOrangeAccent,
+              onPressed: () => print('Open Dropdown Menu'),
+            ),
           ),
-        ),
-        ListView.separated(
+          ListView.builder(
             itemBuilder: (BuildContext context, int setIndex) {
               final ExerciseSet exerciseSet =
                   exerciseRecord.exerciseSets[setIndex];
@@ -125,18 +116,40 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                 background: Container(color: Colors.red),
               );
             },
+            itemCount: exerciseRecord.exerciseSets.length,
             shrinkWrap: true,
-            separatorBuilder: (BuildContext context, int) => Divider(),
-            itemCount: exerciseRecord.exerciseSets.length)
-      ],
+          ),
+          Center(
+            child: IconButton(
+              icon: Icon(Icons.add),
+              tooltip: 'Add a set',
+              onPressed: () async => await addSet(exerciseRecord),
+              color: Colors.deepOrange,
+            )
+          )
+        ],
+      ),
     );
+  }
+
+  Future addSet(ExerciseRecord exerciseRecord) async {
+    int weight = 0;
+    int reps = 0;
+    if (exerciseRecord.exerciseSets.isNotEmpty) {
+      ExerciseSet lastSet = exerciseRecord.exerciseSets.last;
+      weight = lastSet.weight;
+      reps = lastSet.reps;
+    }
+    exerciseRecord.exerciseSets.add(ExerciseSet(weight, reps));
+    await exerciseRecordService.saveExerciseRecord(
+        _username, exerciseRecord, exerciseRecord.exerciseRecId);
+    setState(() {});
   }
 
   Widget _displaySet(
       BuildContext context, ExerciseSet exerciseSet, ExerciseRecord parent) {
-    final double width = 70;
-
-    final double height = 35;
+    final double width = 120;
+    final double height = 45;
     return Row(
       children: <Widget>[
         Expanded(
@@ -148,33 +161,34 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                         child: TextFormField(
                       initialValue: exerciseSet.weight.toString(),
                       keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
                       onChanged: (val) => exerciseSet.weight = int.parse(val),
-                      onEditingComplete: () async {
+                      onFieldSubmitted: (val) async {
                         await exerciseRecordService.saveExerciseRecord(
                             _username, parent, parent.exerciseRecId);
                       },
                     )),
                     width: width,
                     height: height))),
-        Expanded(child: Center(child: Text('weight'))),
-        Divider(),
+        Expanded(child: Center(child: Text('lb(s)'))),
         Expanded(
             child: Center(
                 child: Container(
-          padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
-          child: Center(
-              child: TextFormField(
-            initialValue: exerciseSet.reps.toString(),
-            keyboardType: TextInputType.number,
-            onChanged: (val) => exerciseSet.reps = int.parse(val),
-            onEditingComplete: () async {
-              await exerciseRecordService.saveExerciseRecord(
-                  _username, parent, parent.exerciseRecId);
-            },
-          )),
-          width: width,
-          height: height,
-        ))),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
+                    child: Center(
+                        child: TextFormField(
+                      initialValue: exerciseSet.reps.toString(),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      onChanged: (val) => exerciseSet.reps = int.parse(val),
+                      onFieldSubmitted: (val) async {
+                        await exerciseRecordService.saveExerciseRecord(
+                            _username, parent, parent.exerciseRecId);
+                      },
+                    )),
+                    width: width,
+                    height: height))),
         Expanded(child: Center(child: Text('rep(s)')))
       ],
     );
