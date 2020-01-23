@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tokyo_mobile/pages/exercise_record_list_page.dart';
+import 'package:tokyo_mobile/pages/dashboard.dart';
 import 'package:tokyo_mobile/pages/signup_form.dart';
-import 'package:tokyo_mobile/pages/workout_calendar_overview.dart';
-import 'package:tokyo_mobile/sandbox/dashboard.dart';
-import 'package:tokyo_mobile/sandbox/todo_list.dart';
-import 'package:uuid/uuid.dart';
+import 'package:tokyo_mobile/sandbox/sandbox_view.dart';
 
 class LogInForm extends StatefulWidget {
   @override
@@ -113,6 +110,6 @@ void _goToDashboard(BuildContext context, String username) {
 void goToSandbox(BuildContext context) {
   Navigator.push(context,
       MaterialPageRoute<void>(builder: (BuildContext context) {
-    return TodoApp();
+    return Sandbox();
   }));
 }
