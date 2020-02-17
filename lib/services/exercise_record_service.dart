@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:tokyo_mobile/models/exercise_record.dart';
 
 class ExerciseRecordService {
-  static const String _baseUrl = 'http://167.71.181.19:3000';
+  static const String _baseUrl = 'http://167.71.181.19:3050';
 
   Future<List<ExerciseRecord>> fetchExerciseRecords(String username) async {
     final String fetchExerciseRecordsUrl =

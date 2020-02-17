@@ -21,7 +21,7 @@ enum ExRecOption { delete, info }
 class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   final ExerciseRecordService exerciseRecordService = ExerciseRecordService();
   final TextEditingController createExerciseTextController =
-  TextEditingController();
+      TextEditingController();
   final String _title = 'Workout Log';
 
   String _username;
@@ -77,6 +77,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
 
   Widget _displayExerciseRecordList(List<ExerciseRecord> exerciseRecords) {
     print('Exercise Records: $exerciseRecords');
+    if (exerciseRecords == null) return Container();
     return ListView.builder(
         itemBuilder: (context, index) {
           return _displayAnExerciseRecord(exerciseRecords[index]);
@@ -92,40 +93,56 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
       child: Column(
         children: <Widget>[
           ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-            leading: FlutterLogo(),
-            title: Text('${exerciseRecord.nameAndCreatedDate()}'),
-            trailing: PopupMenuButton<ExRecOption> (
-              icon: Icon(Icons.more_vert),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0))
-              ),
-              itemBuilder: (context) => <PopupMenuEntry<ExRecOption>>[
-                const PopupMenuItem<ExRecOption>(
-                  value: ExRecOption.info,
-                  child: ListTile(
-                    leading: Icon(Icons.info),
-                    title: Text('Exercise Info'),
-                    dense: true,
-                    contentPadding: EdgeInsets.all(0),
-                  )
-                ),
-                const PopupMenuItem<ExRecOption>(
-                  value: ExRecOption.delete,
-                  child: ListTile(
-                    leading: Icon(Icons.clear),
-                    title: Text('Remove'),
-                    dense: true,
-                    contentPadding: EdgeInsets.all(0),
-                  )
-                )
-              ],
-            )
-          ),
+              contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+              leading: FlutterLogo(),
+              title: Text('${exerciseRecord.nameAndCreatedDate()}'),
+              trailing: PopupMenuButton<ExRecOption>(
+                icon: Icon(Icons.more_vert),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                onSelected: (ExRecOption result) {
+                  switch (result) {
+                    case ExRecOption.info:
+                      {
+                        print("Option info");
+                      }
+                      break;
+                    case ExRecOption.delete:
+                      {
+                        _deleteExerciseRecord(
+                            _username, exerciseRecord.exerciseRecId);
+                      }
+                      break;
+                    default:
+                      {
+                        print("Unknown case...");
+                      }
+                      break;
+                  }
+                },
+                itemBuilder: (context) => <PopupMenuEntry<ExRecOption>>[
+                  const PopupMenuItem<ExRecOption>(
+                      value: ExRecOption.info,
+                      child: ListTile(
+                        leading: Icon(Icons.info),
+                        title: Text('Exercise Info'),
+                        dense: true,
+                        contentPadding: EdgeInsets.all(0),
+                      )),
+                  const PopupMenuItem<ExRecOption>(
+                      value: ExRecOption.delete,
+                      child: ListTile(
+                        leading: Icon(Icons.clear),
+                        title: Text('Remove'),
+                        dense: true,
+                        contentPadding: EdgeInsets.all(0),
+                      ))
+                ],
+              )),
           ListView.builder(
             itemBuilder: (BuildContext context, int setIndex) {
               final ExerciseSet exerciseSet =
-              exerciseRecord.exerciseSets[setIndex];
+                  exerciseRecord.exerciseSets[setIndex];
               return Dismissible(
                 key: Key(exerciseSet.hashCode.toString()),
                 child: _displaySet(context, exerciseSet, exerciseRecord),
@@ -143,12 +160,11 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
           ),
           Center(
               child: IconButton(
-                icon: Icon(Icons.add),
-                tooltip: 'Add a set',
-                onPressed: () async => await addSet(exerciseRecord),
-                color: Colors.deepOrange,
-              )
-          )
+            icon: Icon(Icons.add),
+            tooltip: 'Add a set',
+            onPressed: () async => await addSet(exerciseRecord),
+            color: Colors.deepOrange,
+          ))
         ],
       ),
     );
@@ -168,8 +184,13 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
     setState(() {});
   }
 
-  Widget _displaySet(BuildContext context, ExerciseSet exerciseSet,
-      ExerciseRecord parent) {
+  Future _deleteExerciseRecord(String username, String exRecId) async {
+    await exerciseRecordService.deleteExerciseRecord(username, exRecId);
+    setState(() {});
+  }
+
+  Widget _displaySet(
+      BuildContext context, ExerciseSet exerciseSet, ExerciseRecord parent) {
     final double width = 120;
     final double height = 45;
     return Row(
@@ -178,19 +199,18 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
             child: Center(
                 child: Container(
                     padding:
-                    EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
+                        EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
                     child: Center(
                         child: TextFormField(
-                          initialValue: exerciseSet.weight.toString(),
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          onChanged: (val) =>
-                          exerciseSet.weight = int.parse(val),
-                          onFieldSubmitted: (val) async {
-                            await exerciseRecordService.saveExerciseRecord(
-                                _username, parent, parent.exerciseRecId);
-                          },
-                        )),
+                      initialValue: exerciseSet.weight.toString(),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      onChanged: (val) => exerciseSet.weight = int.parse(val),
+                      onFieldSubmitted: (val) async {
+                        await exerciseRecordService.saveExerciseRecord(
+                            _username, parent, parent.exerciseRecId);
+                      },
+                    )),
                     width: width,
                     height: height))),
         Expanded(child: Center(child: Text('lb(s)'))),
@@ -198,18 +218,18 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
             child: Center(
                 child: Container(
                     padding:
-                    EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
+                        EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
                     child: Center(
                         child: TextFormField(
-                          initialValue: exerciseSet.reps.toString(),
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          onChanged: (val) => exerciseSet.reps = int.parse(val),
-                          onFieldSubmitted: (val) async {
-                            await exerciseRecordService.saveExerciseRecord(
-                                _username, parent, parent.exerciseRecId);
-                          },
-                        )),
+                      initialValue: exerciseSet.reps.toString(),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      onChanged: (val) => exerciseSet.reps = int.parse(val),
+                      onFieldSubmitted: (val) async {
+                        await exerciseRecordService.saveExerciseRecord(
+                            _username, parent, parent.exerciseRecId);
+                      },
+                    )),
                     width: width,
                     height: height))),
         Expanded(child: Center(child: Text('rep(s)')))
@@ -223,17 +243,20 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
       backgroundColor: Colors.deepOrangeAccent,
       onPressed: () async {
         String exerciseName =
-        await _getExerciseName(context, createExerciseTextController);
+            await _getExerciseName(context, createExerciseTextController);
         if (exerciseName == null || exerciseName.isEmpty) return;
+        ExerciseRecord exerciseRecord =
+            ExerciseRecord(exerciseName, _workoutId);
+        exerciseRecord.exerciseSets.add(ExerciseSet(0, 0));
         await exerciseRecordService.createExerciseRecord(
-            _username, ExerciseRecord(exerciseName, _workoutId));
+            _username, exerciseRecord);
         setState(() {});
       },
     );
   }
 
-  Future<String> _getExerciseName(BuildContext context,
-      TextEditingController exerciseNameText) async {
+  Future<String> _getExerciseName(
+      BuildContext context, TextEditingController exerciseNameText) async {
     String exerciseName = await showDialog<String>(
         context: context,
         barrierDismissible: true,

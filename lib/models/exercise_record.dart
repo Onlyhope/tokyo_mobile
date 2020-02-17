@@ -32,22 +32,18 @@ class ExerciseRecord {
       setList.add(ExerciseSet.fromJson(record));
     }
 
-    this.exerciseRecId = json['ex_rec_id'];
-    this.exerciseName = json['exercise_name'];
+    this.exerciseRecId = json['exerciseRecId'];
+    this.exerciseName = json['exerciseName'];
     this.exerciseSets = setList;
-    this.createdDate = json['created_date'] != null
-        ? DateTime.parse(json['created_date'])
-        : null;
-    this.completedDate = json['completed_date'] != null
-        ? DateTime.parse(json['completed_date'])
+    this.createdDate = json['createdDate'] != null
+        ? DateTime.parse(json['createdDate'])
         : null;
   }
 
   Map<String, dynamic> toJson() => {
-        'exercise_name': exerciseName,
+        'exerciseName': exerciseName,
         'sets': exerciseSets,
-        'created_date': createdDate.toString(),
-        'compeleted_date': completedDate.toString()
+        'createdDate': createdDate.toString()
       };
 
   @override
@@ -56,6 +52,6 @@ class ExerciseRecord {
     for (var x in this.exerciseSets) {
       exerciseSetsAsString += '${x}\n';
     }
-    return 'ExerciseRecord{exerciseRecId: $exerciseRecId, exerciseName: $exerciseName}\n${exerciseSetsAsString}';
+    return 'ExerciseRecord{exerciseRecId: $exerciseRecId, exerciseName: $exerciseName}\n$exerciseSetsAsString';
   }
 }
