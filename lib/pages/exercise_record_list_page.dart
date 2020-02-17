@@ -22,7 +22,10 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   final ExerciseRecordService exerciseRecordService = ExerciseRecordService();
   final TextEditingController createExerciseTextController =
       TextEditingController();
-  final String _title = 'Workout Log';
+  static final today = DateTime.now().toLocal();
+  static final startOfDay = DateTime(today.year, today.month, today.day, 0, 0);
+  static final endOfDay = DateTime(today.year, today.month, today.day, 0, 0);
+  static final String _title = 'Workout Log';
 
   String _username;
   String _workoutId;
@@ -44,32 +47,42 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(_title)),
-      body: Container(
-        child: FutureBuilder<List<ExerciseRecord>>(
-          future: exerciseRecordService.fetchExerciseRecords(_username),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            print("Snapshot Error: ${snapshot.hasError}");
+      body: Column(
+        children: <Widget>[
+          Center(
+            child: Padding(
+              child: Text('${today.month}-${today.day}-${today.year}'),
+              padding: EdgeInsets.only(top: 10.0),
+            )
+          ),
+          Divider(),
+          FutureBuilder<List<ExerciseRecord>>(
+            future: exerciseRecordService.fetchExerciseRecords(
+                _username, startOfDay, endOfDay),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              print("Snapshot Error: ${snapshot.hasError}");
 
-            print("Snapshot Error: ${snapshot.error}");
+              print("Snapshot Error: ${snapshot.error}");
 
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return Container(child: Text('Loading...'));
-                break;
-              case ConnectionState.waiting:
-                return Container(child: Text('Loading...'));
-                break;
-              case ConnectionState.active:
-                return Container(child: Text('Loading...'));
-                break;
-              case ConnectionState.done:
-                List<ExerciseRecord> exerciseRecords = snapshot.data;
-                return _displayExerciseRecordList(exerciseRecords);
-            }
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return Container(child: Text('Loading...'));
+                  break;
+                case ConnectionState.waiting:
+                  return Container(child: Text('Loading...'));
+                  break;
+                case ConnectionState.active:
+                  return Container(child: Text('Loading...'));
+                  break;
+                case ConnectionState.done:
+                  List<ExerciseRecord> exerciseRecords = snapshot.data;
+                  return _displayExerciseRecordList(exerciseRecords);
+              }
 
-            return Container();
-          },
-        ),
+              return Container();
+            },
+          )
+        ],
       ),
       floatingActionButton: _addExerciseRecordButton(),
     );
@@ -79,10 +92,12 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
     print('Exercise Records: $exerciseRecords');
     if (exerciseRecords == null) return Container();
     return ListView.builder(
-        itemBuilder: (context, index) {
-          return _displayAnExerciseRecord(exerciseRecords[index]);
-        },
-        itemCount: exerciseRecords.length);
+      itemBuilder: (context, index) {
+        return _displayAnExerciseRecord(exerciseRecords[index]);
+      },
+      itemCount: exerciseRecords.length,
+      shrinkWrap: true,
+    );
   }
 
   Widget _displayAnExerciseRecord(ExerciseRecord exerciseRecord) {
@@ -95,7 +110,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
           ListTile(
               contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
               leading: FlutterLogo(),
-              title: Text('${exerciseRecord.nameAndCreatedDate()}'),
+              title: Text('${exerciseRecord.exerciseName}'),
               trailing: PopupMenuButton<ExRecOption>(
                 icon: Icon(Icons.more_vert),
                 shape: RoundedRectangleBorder(
