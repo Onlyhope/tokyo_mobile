@@ -91,7 +91,7 @@ class DashboardState extends State<Dashboard> {
             trailing: Icon(Icons.arrow_right),
           ),
           onTap: () {
-            _goToExerciseOverview(context);
+            _goToExerciseOverview(context, userProfile.username);
           },
         ),
         InkWell(
@@ -121,10 +121,10 @@ class DashboardState extends State<Dashboard> {
     );
   }
 
-  void _goToExerciseOverview(BuildContext context) {
+  void _goToExerciseOverview(BuildContext context, String username) {
     Navigator.push(context,
         MaterialPageRoute<void>(builder: (BuildContext context) {
-      return WorkoutCalendarOverview();
+      return WorkoutCalendarOverview(username: username);
     }));
   }
 

@@ -47,7 +47,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(_title)),
-      body: Column(
+      body: ListView(
         children: <Widget>[
           Center(
             child: Padding(
@@ -154,24 +154,8 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                       ))
                 ],
               )),
-          ListView.builder(
-            itemBuilder: (BuildContext context, int setIndex) {
-              final ExerciseSet exerciseSet =
-                  exerciseRecord.exerciseSets[setIndex];
-              return Dismissible(
-                key: Key(exerciseSet.hashCode.toString()),
-                child: _displaySet(context, exerciseSet, exerciseRecord),
-                onDismissed: (direction) async {
-                  exerciseRecord.exerciseSets.removeAt(setIndex);
-                  await exerciseRecordService.saveExerciseRecord(
-                      _username, exerciseRecord, exerciseRecord.exerciseRecId);
-                  setState(() {});
-                },
-                background: Container(color: Colors.red),
-              );
-            },
-            itemCount: exerciseRecord.exerciseSets.length,
-            shrinkWrap: true,
+          Column(
+            children: displayDismissibleSets(exerciseRecord),
           ),
           Center(
               child: IconButton(
@@ -204,8 +188,23 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
     setState(() {});
   }
 
-  Widget _displaySet(
-      BuildContext context, ExerciseSet exerciseSet, ExerciseRecord parent) {
+  List<Widget> displayDismissibleSets(ExerciseRecord exerciseRecord) {
+    return exerciseRecord.exerciseSets.asMap().entries.map((entry) {
+      ExerciseSet set = entry.value;
+      return Dismissible(
+        key: Key("${set.hashCode}-${entry.key}"),
+        child: _displaySet(set, exerciseRecord),
+        onDismissed: (direction) async {
+          await exerciseRecordService.saveExerciseRecord(_username, exerciseRecord, exerciseRecord.exerciseRecId);
+          setState(() {
+          });
+        },
+        background: Container(color: Colors.red),
+      );
+    }).toList();
+  }
+
+  Widget _displaySet(ExerciseSet exerciseSet, ExerciseRecord parent) {
     final double width = 120;
     final double height = 45;
     return Row(
@@ -318,4 +317,6 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
     exerciseNameText.clear();
     return exerciseName;
   }
+
+
 }

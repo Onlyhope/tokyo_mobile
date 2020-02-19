@@ -2,19 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tokyo_mobile/models/exercise_record.dart';
 import 'package:tokyo_mobile/models/workout.dart';
+import 'package:tokyo_mobile/services/exercise_record_service.dart';
 import 'package:tokyo_mobile/stubs/data_template.dart';
 import 'package:collection/collection.dart';
 import 'package:tokyo_mobile/widgets/workout_records_view.dart';
 
 class WorkoutCalendarOverview extends StatefulWidget {
+  final String username;
+
+  WorkoutCalendarOverview({@required this.username});
+
   @override
   WorkoutCalendarOverviewState createState() {
-    return WorkoutCalendarOverviewState();
+    return WorkoutCalendarOverviewState(username: username);
   }
 }
 
 class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
+  final ExerciseRecordService exerciseRecordService = ExerciseRecordService();
   final String _title = 'Workout Overview';
+  final String username;
   final List<Color> colorPool = [
     Color(0x77ff9aa2),
     Color(0x77ffb7b2),
@@ -26,20 +33,30 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
 
   List<WorkoutRecord> _selectedWorkouts;
   List<ExerciseRecord> _monthOfExerciseRecords;
-  Map<DateTime, List<WorkoutRecord>> _workouts;
+  Map<DateTime, List<ExerciseRecord>> _exerciseRecordsByCreatedDate;
   CalendarController _calendarController;
+  DateTime startOfMonth;
+  DateTime endOfMonth;
+
+  WorkoutCalendarOverviewState({@required this.username});
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
     _calendarController = CalendarController();
-    _monthOfExerciseRecords = DataTemplate().monthOfExerciseRecords();
 
-    Map<String, List<ExerciseRecord>> workouts = groupBy(
-        _monthOfExerciseRecords, (exerciseRecord) => exerciseRecord.workoutId);
-    var workoutList = workouts.values.map((exerciseRecords) =>
-        WorkoutRecord.fromExerciseRecords(exerciseRecords: exerciseRecords));
-    _workouts = groupBy(workoutList, (workout) => workout.startDate);
+    DateTime today = DateTime.now().toLocal();
+    startOfMonth = DateTime(today.year, today.month);
+    endOfMonth = DateTime(today.year, today.month);
+
+    List<ExerciseRecord> _monthOfExerciseRecords = await exerciseRecordService
+        .fetchExerciseRecords(username, startOfMonth, endOfMonth);
+
+    _exerciseRecordsByCreatedDate =
+        groupBy(_monthOfExerciseRecords, (exerciseRecord) {
+      DateTime createdDate = exerciseRecord.createdDate;
+      return DateTime(createdDate.year, createdDate.month, createdDate.day);
+    });
   }
 
   @override
@@ -72,7 +89,7 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
         body: ListView(children: <Widget>[
           TableCalendar(
               calendarController: _calendarController,
-              events: _workouts,
+              events: _exerciseRecordsByCreatedDate,
               onDaySelected: _onDaySelected,
               onDayLongPressed: _onDayLongPressed,
               calendarStyle: CalendarStyle(canEventMarkersOverflow: false),
@@ -81,9 +98,9 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
                   formatButtonVisible: false,
                   centerHeaderTitle: true)),
           const SizedBox(height: 8.0),
-          WorkoutRecordsView(workoutRecords: _selectedWorkouts, colorPool: colorPool),
+          WorkoutRecordsView(
+              workoutRecords: _selectedWorkouts, colorPool: colorPool),
           const SizedBox(height: 8.0)
         ]));
   }
-
 }
