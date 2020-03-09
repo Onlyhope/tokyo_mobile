@@ -19,14 +19,14 @@ class ExerciseRecordListPage extends StatefulWidget {
 enum ExRecOption { delete, info }
 
 class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
+  static final String _title = 'Workout Log';
   final ExerciseRecordService exerciseRecordService = ExerciseRecordService();
   final TextEditingController createExerciseTextController =
       TextEditingController();
-  static final today = DateTime.now().toLocal();
-  static final startOfDay = DateTime(today.year, today.month, today.day, 0, 0);
-  static final endOfDay = DateTime(today.year, today.month, today.day, 0, 0);
-  static final String _title = 'Workout Log';
 
+  DateTime _today;
+  DateTime _startOfDay;
+  DateTime _endOfDay;
   String _username;
   String _workoutId;
 
@@ -35,6 +35,9 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
     super.initState();
     _username = widget.username;
     _workoutId = widget.workoutId;
+    _today = DateTime.now().toLocal();
+    _startOfDay = DateTime(_today.year, _today.month, _today.day, 0, 0);
+    _endOfDay = _startOfDay.add(Duration(days: 1));
   }
 
   @override
@@ -52,13 +55,13 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
           Center(
               child: Padding(
 
-            child: Text('${today.month}-${today.day}-${today.year}'),
+            child: Text('${_today.month}-${_today.day}-${_today.year}'),
             padding: EdgeInsets.only(top: 10.0),
           )),
           Divider(),
           FutureBuilder<List<ExerciseRecord>>(
             future: exerciseRecordService.fetchExerciseRecords(
-                _username, startOfDay, endOfDay),
+                _username, _startOfDay, _endOfDay),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               print("Snapshot Error: ${snapshot.hasError}");
               print("Snapshot Error: ${snapshot.error}");

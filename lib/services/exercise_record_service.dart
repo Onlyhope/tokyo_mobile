@@ -15,9 +15,10 @@ class ExerciseRecordService {
   Future<List<ExerciseRecord>> fetchExerciseRecords(
       String username, DateTime from, DateTime to) async {
     Map<String, String> queryParams = {
-      'fromCreated': (from ?? defaultStart).toIso8601String(),
-      'toCreated': (to ?? DateTime.now()).toIso8601String()
+      'createdFrom': (from ?? defaultStart).toUtc().toIso8601String(),
+      'createdTo': (to ?? DateTime.now()).toUtc().toIso8601String()
     };
+
     Uri uri =
         Uri.http(_baseUrl, '/users/$username/exercise-records', queryParams);
     logger.v('Fetching exercises for $username ... $uri');
