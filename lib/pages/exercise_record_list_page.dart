@@ -77,11 +77,11 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                   List<ExerciseRecord> exerciseRecords = snapshot.data;
                   return _displayExerciseRecordList(exerciseRecords);
               }
-
               return Container();
             },
           )
         ],
+        shrinkWrap: true
       ),
       floatingActionButton: _addExerciseRecordButton(),
     );
@@ -96,6 +96,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
       },
       itemCount: exerciseRecords.length,
       shrinkWrap: true,
+      primary: false
     );
   }
 
