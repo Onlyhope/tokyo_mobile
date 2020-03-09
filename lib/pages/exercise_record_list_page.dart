@@ -50,18 +50,17 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
       body: ListView(
         children: <Widget>[
           Center(
-            child: Padding(
-              child: Text('${today.month}-${today.day}-${today.year}'),
-              padding: EdgeInsets.only(top: 10.0),
-            )
-          ),
+              child: Padding(
+
+            child: Text('${today.month}-${today.day}-${today.year}'),
+            padding: EdgeInsets.only(top: 10.0),
+          )),
           Divider(),
           FutureBuilder<List<ExerciseRecord>>(
             future: exerciseRecordService.fetchExerciseRecords(
                 _username, startOfDay, endOfDay),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               print("Snapshot Error: ${snapshot.hasError}");
-
               print("Snapshot Error: ${snapshot.error}");
 
               switch (snapshot.connectionState) {
@@ -195,9 +194,9 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
         key: Key("${set.hashCode}-${entry.key}"),
         child: _displaySet(set, exerciseRecord),
         onDismissed: (direction) async {
-          await exerciseRecordService.saveExerciseRecord(_username, exerciseRecord, exerciseRecord.exerciseRecId);
-          setState(() {
-          });
+          await exerciseRecordService.saveExerciseRecord(
+              _username, exerciseRecord, exerciseRecord.exerciseRecId);
+          setState(() {});
         },
         background: Container(color: Colors.red),
       );
@@ -317,6 +316,4 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
     exerciseNameText.clear();
     return exerciseName;
   }
-
-
 }

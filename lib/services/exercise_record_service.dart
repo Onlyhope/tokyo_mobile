@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:logger/logger.dart';
 import 'package:http/http.dart';
+import 'package:logger/logger.dart';
 import 'package:tokyo_mobile/models/exercise_record.dart';
 
 class ExerciseRecordService {
 
-  static const String _baseUrl = '167.71.181.19:3050';
+  static const String _baseUrl = '167.71.181.19:3000';
 
   DateTime defaultStart = DateTime(1970, 1, 1);
   final logger = Logger();
@@ -21,8 +21,9 @@ class ExerciseRecordService {
     Uri uri =
         Uri.http(_baseUrl, '/users/$username/exercise-records', queryParams);
     logger.v('Fetching exercises for $username ... $uri');
-    Response response = await get(uri,
-        headers: {HttpHeaders.contentTypeHeader: 'application/json'});
+    Map<String, String> headers = defaultHeaders();
+
+    Response response = await get(uri, headers: headers);
     logger.v('Response: ${response.body}');
 
     var data = json.decode(response.body) as List;
@@ -39,12 +40,12 @@ class ExerciseRecordService {
 
   Future<ExerciseRecord> fetchExerciseRecord(
       String username, String exRecId) async {
-    final String fetchAnExerciseRecordUrl =
-        '$_baseUrl/users/$username/exercise-records/$exRecId';
+    Uri uri = Uri.http(_baseUrl, '/users/$username/exercise-records/$exRecId');
+    logger.v('Fetching exercises for $username ... $uri');
+    Map<String, String> headers = defaultHeaders();
 
-    print('Fetching an exercise record for $username with exRecId: $exRecId');
-    Response response = await get(fetchAnExerciseRecordUrl);
-    print('Response: ${response.body} Status: ${response.statusCode}');
+    Response response = await get(uri, headers: headers);
+    logger.v('Response: ${response.body}');
 
     return ExerciseRecord.fromJson(json.decode(response.body));
   }
@@ -53,35 +54,35 @@ class ExerciseRecordService {
       String username, ExerciseRecord exerciseRecord) async {
     final String createExerciseRecordsUrl =
         '$_baseUrl/users/$username/exercise-records/';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
 
-    print('Creating exercise with $username... $createExerciseRecordsUrl');
-    Response response = await post(createExerciseRecordsUrl,
-        headers: headers, body: jsonEncode(exerciseRecord));
+    Uri uri = Uri.http(_baseUrl, '/users/$username/exercise-records/');
+    logger.v('Creating exercise with $username... $createExerciseRecordsUrl');
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: 'application/json'
+    };
 
-    print('Post response status code: ${response.statusCode}');
+    Response response = await post(
+        uri, headers: headers, body: jsonEncode(exerciseRecord));
+    logger.v('Post response status code: ${response.statusCode}');
 
     return response.statusCode;
   }
 
   Future<int> saveExerciseRecord(
       String username, ExerciseRecord exerciseRecord, String id) async {
-    final String saveExerciseRecordUrl =
-        '$_baseUrl/users/$username/exercise-records/$id';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
 
-    Response response = await put(saveExerciseRecordUrl,
+    Uri uri = Uri.http(_baseUrl, '/users/$username/exercise-records/$id');
+    Map<String, String> headers = defaultHeaders();
+
+    Response response = await put(uri,
         headers: headers, body: jsonEncode(exerciseRecord));
 
     return response.statusCode;
   }
 
   Future<int> deleteExerciseRecord(String username, String id) async {
-    final String deleteExerciseRecordsUrl =
-        _baseUrl + '/users/$username/exercise-records/$id';
-
-    Response response = await delete(deleteExerciseRecordsUrl);
-
+    Uri uri = Uri.http(_baseUrl, '/users/$username/exercise-records/$id');
+    Response response = await delete(uri);
     return response.statusCode;
   }
 
@@ -89,5 +90,11 @@ class ExerciseRecordService {
     if (exerciseRecordsAsJson == null) return [];
     var exerciseRecords = [];
     return exerciseRecords;
+  }
+
+  Map<String, String> defaultHeaders() {
+    return {
+      HttpHeaders.contentTypeHeader: 'application/json'
+    };
   }
 }
