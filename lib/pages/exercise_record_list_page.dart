@@ -63,18 +63,18 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
             future: exerciseRecordService.fetchExerciseRecords(
                 _username, _startOfDay, _endOfDay),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              print("Snapshot Error: ${snapshot.hasError}");
+              print("Does snapshot have error? ${snapshot.hasError}");
               print("Snapshot Error: ${snapshot.error}");
 
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
-                  return Container(child: Text('Loading...'));
+                  return CircularProgressIndicator();
                   break;
                 case ConnectionState.waiting:
-                  return Container(child: Text('Loading...'));
+                  return CircularProgressIndicator();
                   break;
                 case ConnectionState.active:
-                  return Container(child: Text('Loading...'));
+                  return CircularProgressIndicator();
                   break;
                 case ConnectionState.done:
                   List<ExerciseRecord> exerciseRecords = snapshot.data;
