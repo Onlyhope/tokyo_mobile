@@ -68,8 +68,8 @@ class DashboardState extends State<Dashboard> {
                 'Last Workout',
                 style: TextStyle(fontSize: 18.0),
               ))),
-          WorkoutRecordsView(
-              workoutRecords: [lastWorkout], colorPool: [Colors.black38])
+//          WorkoutRecordView(
+//              workoutRecords: [lastWorkout], colorPool: [Colors.black38])
         ],
         padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 3.0),
       ),

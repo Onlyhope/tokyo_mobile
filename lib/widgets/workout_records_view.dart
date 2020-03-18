@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
@@ -5,41 +6,23 @@ import 'package:tokyo_mobile/models/exercise_record.dart';
 import 'package:tokyo_mobile/models/exercise_set.dart';
 import 'package:tokyo_mobile/models/workout.dart';
 
-class WorkoutRecordsView extends StatelessWidget {
-  final List<WorkoutRecord> workoutRecords;
+class WorkoutRecordView extends StatelessWidget {
+  final List<ExerciseRecord> exerciseRecords;
   final List<Color> colorPool;
 
-  WorkoutRecordsView({this.workoutRecords, this.colorPool});
+  WorkoutRecordView({this.exerciseRecords, this.colorPool});
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: _buildWorkoutRecords(workoutRecords));
+    return Column(children: _toExerciseRecordView(exerciseRecords, Color(0x77ff9aa2)));
   }
 
-  List<Widget> _buildWorkoutRecords(List<WorkoutRecord> workoutRecords) {
-    if (workoutRecords == null) return [];
-    List<Color> colors = _generateColors(workoutRecords.length, colorPool);
-    var pairs = List.generate(
-        workoutRecords.length, (int i) => [workoutRecords[i], colors[i]]);
-    return pairs
-        .map((pair) => _toExerciseRecordView(pair[0], pair[1]))
-        .expand((item) => item)
-        .toList();
-  }
-
-  List<Widget> _toExerciseRecordView(WorkoutRecord workout, Color bgColor) {
-    return workout.exerciseRecords
+  List<Widget> _toExerciseRecordView(List<ExerciseRecord> exerciseRecords, Color bgColor) {
+    return exerciseRecords
         .map((exerciseRecord) => ExerciseRecordView(exerciseRecord, bgColor))
         .toList();
   }
 
-  List<Color> _generateColors(int n, List<Color> colorPool) {
-    List<Color> colors = List(n);
-    for (int i = 0; i < colors.length; i++) {
-      colors[i] = colorPool[i % colorPool.length];
-    }
-    return colors;
-  }
 }
 
 class ExerciseRecordView extends StatelessWidget {

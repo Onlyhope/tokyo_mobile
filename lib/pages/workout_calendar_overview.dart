@@ -30,7 +30,7 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
     Color(0x77c7ceea)
   ];
 
-  List<WorkoutRecord> _selectedWorkouts;
+  List<ExerciseRecord> _selectedExerciseRecords;
   Map<DateTime, List<ExerciseRecord>> _exerciseRecordsByCreatedDate;
   CalendarController _calendarController;
   DateTime _startOfMonth;
@@ -46,6 +46,7 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
     DateTime today = DateTime.now().toLocal();
     _startOfMonth = DateTime(today.year, today.month).toUtc();
     _endOfMonth = DateTime(today.year, today.month + 1).toUtc();
+    _selectedExerciseRecords = [];
     loadExerciseRecords();
   }
 
@@ -56,8 +57,9 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
   }
 
   void _onDaySelected(DateTime day, List exerciseRecords) {
+    List<ExerciseRecord> exRecs = new List<ExerciseRecord>.from(exerciseRecords ?? []);
     setState(() {
-
+      _selectedExerciseRecords = exRecs;
     });
   }
 
@@ -80,8 +82,6 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
 
   @override
   Widget build(BuildContext context) {
-//    loadExerciseRecords();
-  print("Building... ${_exerciseRecordsByCreatedDate.toString()}");
     return Scaffold(
         appBar: AppBar(title: Text(_title)),
         body: _displayCalendarOverview()
@@ -102,8 +102,8 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
                   formatButtonVisible: false,
                   centerHeaderTitle: true)),
           const SizedBox(height: 8.0),
-          WorkoutRecordsView(
-              workoutRecords: _selectedWorkouts, colorPool: colorPool),
+          WorkoutRecordView(
+              exerciseRecords: _selectedExerciseRecords, colorPool: colorPool),
           const SizedBox(height: 8.0)
         ]
     );
