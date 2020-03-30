@@ -7,7 +7,7 @@ import 'package:tokyo_mobile/models/exercise_record.dart';
 
 class ExerciseRecordService {
 
-  static const String _baseUrl = '167.71.181.19:3000';
+  static const String _baseUrl = '167.71.181.19:3050';
 
   DateTime defaultStart = DateTime(1970, 1, 1);
   final logger = Logger();

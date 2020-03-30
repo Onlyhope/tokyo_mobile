@@ -77,6 +77,9 @@ class WorkoutCalendarOverviewState extends State<WorkoutCalendarOverview> {
             DateTime createdDate = exerciseRecord.createdDate;
             return DateTime(createdDate.year, createdDate.month, createdDate.day);
           });
+      DateTime today = DateTime.now().toLocal();
+      DateTime todayDate = DateTime(today.year, today.month, today.day);
+      _selectedExerciseRecords = _exerciseRecordsByCreatedDate[todayDate];
     });
   }
 
