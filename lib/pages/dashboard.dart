@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tokyo_mobile/models/exercise_record.dart';
 import 'package:tokyo_mobile/models/personal_record.dart';
 import 'package:tokyo_mobile/models/user_profile.dart';
 import 'package:tokyo_mobile/models/workout.dart';
@@ -22,7 +23,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class DashboardState extends State<Dashboard> {
-  WorkoutRecord lastWorkout;
+  List<ExerciseRecord> _lastWorkout;
   UserProfile userProfile;
   String username;
 
@@ -48,8 +49,12 @@ class DashboardState extends State<Dashboard> {
 
     userProfile = mockUserProfile;
 
-    lastWorkout = WorkoutRecord.fromExerciseRecords(
-        exerciseRecords: DataTemplate().exerciseRecords());
+    _lastWorkout = _getLastWorkout();
+  }
+
+  List<ExerciseRecord> _getLastWorkout() {
+    // TODO - To be implemented
+    return [];
   }
 
   @override

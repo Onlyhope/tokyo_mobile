@@ -1,10 +1,8 @@
-import 'dart:math';
 import 'dart:ui';
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'package:tokyo_mobile/models/exercise_record.dart';
 import 'package:tokyo_mobile/models/exercise_set.dart';
-import 'package:tokyo_mobile/models/workout.dart';
 
 class WorkoutRecordView extends StatelessWidget {
   final List<ExerciseRecord> exerciseRecords;
