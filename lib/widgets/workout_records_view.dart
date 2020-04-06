@@ -16,7 +16,7 @@ class WorkoutRecordView extends StatelessWidget {
   }
 
   List<Widget> _toExerciseRecordView(List<ExerciseRecord> exerciseRecords, Color bgColor) {
-    return exerciseRecords
+    return (exerciseRecords ?? [])
         .map((exerciseRecord) => ExerciseRecordView(exerciseRecord, bgColor))
         .toList();
   }
