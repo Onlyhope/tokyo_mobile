@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:tokyo_mobile/models/exercise_record.dart';
 import 'package:tokyo_mobile/models/personal_record.dart';
 import 'package:tokyo_mobile/models/user_profile.dart';
-import 'package:tokyo_mobile/models/workout.dart';
 import 'package:tokyo_mobile/pages/exercise_record_list_page.dart';
 import 'package:tokyo_mobile/pages/workout_calendar_overview.dart';
+import 'package:tokyo_mobile/services/exercise_record_service.dart';
 import 'package:tokyo_mobile/services/unit_converter.dart';
-import 'package:tokyo_mobile/stubs/data_template.dart';
-import 'package:tokyo_mobile/widgets/workout_records_view.dart';
 import 'package:uuid/uuid.dart';
 
 class Dashboard extends StatefulWidget {
@@ -23,7 +21,8 @@ class Dashboard extends StatefulWidget {
 }
 
 class DashboardState extends State<Dashboard> {
-  List<ExerciseRecord> _lastWorkout;
+  List<ExerciseRecord> _lastWorkout = [];
+  ExerciseRecordService exerciseRecordService = ExerciseRecordService();
   UserProfile userProfile;
   String username;
 
@@ -49,12 +48,29 @@ class DashboardState extends State<Dashboard> {
 
     userProfile = mockUserProfile;
 
-    _lastWorkout = _getLastWorkout();
+    _loadLastWorkout();
   }
 
-  List<ExerciseRecord> _getLastWorkout() {
-    // TODO - To be implemented
-    return [];
+  void _loadLastWorkout() async {
+    
+    DateTime now = DateTime.now();
+    DateTime nowMinus60Days = now.subtract(Duration(days: 60));
+    List<ExerciseRecord> exerciseRecords = await exerciseRecordService
+        .fetchExerciseRecords(username, nowMinus60Days, now);
+
+    ExerciseRecord mostRecentExerciseRecord = exerciseRecords.first;
+    if (mostRecentExerciseRecord == null) return;
+    String lastWorkoutId = mostRecentExerciseRecord.workoutId;
+
+    List<ExerciseRecord> lastWorkouts = [];
+    for (int i = 0; i < exerciseRecords.length; i++) {
+      if (exerciseRecords[i].workoutId != lastWorkoutId) break;
+        lastWorkouts.add(exerciseRecords[i]);
+    }
+
+    setState(() {
+      _lastWorkout = lastWorkouts;
+    });
   }
 
   @override
