@@ -152,7 +152,7 @@ class DashboardState extends State<Dashboard> {
   void _goToWorkoutCreationPage(BuildContext context, String username) {
     Navigator.push(context,
         MaterialPageRoute<void>(builder: (BuildContext context) {
-      return ExerciseRecordListPage(username: username, workoutId: Uuid().v4());
+      return ExerciseRecordListPage(username: username);
     }));
   }
 }

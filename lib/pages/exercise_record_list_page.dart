@@ -6,9 +6,8 @@ import '../models/exercise_set.dart';
 
 class ExerciseRecordListPage extends StatefulWidget {
   final String username;
-  final String workoutId;
 
-  ExerciseRecordListPage({@required this.username, @required this.workoutId});
+  ExerciseRecordListPage({@required this.username});
 
   @override
   ExerciseRecordListPageState createState() {
@@ -34,7 +33,7 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
   void initState() {
     super.initState();
     _username = widget.username;
-    _workoutId = widget.workoutId;
+    _workoutId = null;
     _today = DateTime.now().toLocal();
     _startOfDay = DateTime(_today.year, _today.month, _today.day, 0, 0);
     _endOfDay = _startOfDay.add(Duration(days: 1));
@@ -78,8 +77,12 @@ class ExerciseRecordListPageState extends State<ExerciseRecordListPage> {
                   break;
                 case ConnectionState.done:
                   List<ExerciseRecord> exerciseRecords = snapshot.data;
+                  if (_workoutId == null && exerciseRecords.isNotEmpty) {
+                    _workoutId = exerciseRecords.first.workoutId;
+                  }
                   return _displayExerciseRecordList(exerciseRecords);
               }
+
               return Container();
             },
           )
